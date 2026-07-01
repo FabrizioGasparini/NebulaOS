@@ -1,6 +1,10 @@
 [terminal]
-vt = 7
+vt = 1
+
+[initial_session]
+command = "sway"
+user = "liveuser"
 
 [default_session]
-command = "cage -s -- gtkgreet -l /etc/greetd/environments"
+command = "agreety --cmd /bin/sh"
 user = "greeter"

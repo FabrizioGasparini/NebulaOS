@@ -1,0 +1,703 @@
+/* ============================================================================
+   NebulaOS GNOME Shell Theme - Nebula
+   A dark violet glassmorphism theme
+   ============================================================================ */
+
+/* Import named colors */
+@import url("resource:///org/gnome/shell/theme/gnome-shell-high-color.css");
+
+/* ============================================================================
+   STAGE & OVERVIEW
+   ============================================================================ */
+
+stage {
+    font-family: "Ubuntu", sans-serif;
+    font-size: 14px;
+    color: #e2d9f3;
+    transition-duration: 250ms;
+}
+
+/* ============================================================================
+   TOP PANEL
+   ============================================================================ */
+
+#panel {
+    background-color: rgba(15, 10, 26, 0.85);
+    border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+    font-weight: bold;
+    height: 32px;
+    font-size: 13px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#panel .panel-corner {
+    -panel-corner-radius: 0;
+    -panel-corner-background-color: transparent;
+    -panel-corner-border-width: 0;
+}
+
+#panel .panel-button {
+    color: #c4b5fd;
+    padding: 0 8px;
+    border-radius: 6px;
+    transition-duration: 200ms;
+}
+
+#panel .panel-button:hover {
+    background-color: rgba(124, 58, 237, 0.2);
+    color: #e2d9f3;
+}
+
+#panel .panel-button:active,
+#panel .panel-button:checked {
+    background-color: rgba(124, 58, 237, 0.35);
+    color: #ffffff;
+}
+
+#panel .panel-button:focus {
+    box-shadow: inset 0 0 0 2px rgba(124, 58, 237, 0.5);
+}
+
+/* Panel app menu */
+#panel .panel-menu-button {
+    font-weight: bold;
+}
+
+/* Panel clock */
+#panel .clock {
+    font-weight: bold;
+    color: #e2d9f3;
+    padding: 0 12px;
+}
+
+#panel .clock .clock-time {
+    font-size: 13px;
+}
+
+#panel .clock .clock-date {
+    font-size: 11px;
+    color: #c4b5fd;
+}
+
+/* System indicators */
+#panel .panel-status-indicators-box {
+    spacing: 2px;
+}
+
+/* ============================================================================
+   DASH (for Dash to Dock)
+   ============================================================================ */
+
+#dash {
+    background-color: rgba(15, 10, 26, 0.75);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 16px;
+    padding: 4px;
+    margin: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+#dash .dash-background {
+    background-color: transparent;
+    border-radius: 16px;
+}
+
+/* Dock items */
+#dash .dash-item {
+    padding: 4px 2px;
+}
+
+#dash .dash-item .app-well-app {
+    border-radius: 12px;
+    transition-duration: 200ms;
+}
+
+#dash .dash-item .app-well-app:hover {
+    background-color: rgba(124, 58, 237, 0.2);
+}
+
+#dash .dash-item .app-well-app:active {
+    background-color: rgba(124, 58, 237, 0.35);
+}
+
+/* Running dots indicator */
+#dash .dash-item .app-well-app .overview-icon {
+    border-radius: 12px;
+    padding: 8px;
+}
+
+/* Show Applications button */
+#dash .show-apps {
+    border-radius: 12px;
+    padding: 8px;
+    margin-top: 4px;
+}
+
+#dash .show-apps:hover {
+    background-color: rgba(124, 58, 237, 0.2);
+}
+
+/* ============================================================================
+   APP GRID
+   ============================================================================ */
+
+/* App grid background */
+.app-grid {
+    padding: 24px;
+}
+
+.app-grid .overview-icon {
+    border-radius: 14px;
+    padding: 12px;
+    transition-duration: 200ms;
+}
+
+.app-grid .overview-icon:hover {
+    background-color: rgba(124, 58, 237, 0.15);
+}
+
+.app-grid .overview-icon:active {
+    background-color: rgba(124, 58, 237, 0.25);
+}
+
+/* App folder dialog */
+.app-folder-dialog {
+    background-color: rgba(15, 10, 26, 0.9);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.app-folder-dialog .overview-icon {
+    border-radius: 12px;
+}
+
+/* Search results */
+.search-provider-icon {
+    background-color: rgba(15, 10, 26, 0.8);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.search-provider-icon:hover {
+    background-color: rgba(124, 58, 237, 0.15);
+    border-color: rgba(124, 58, 237, 0.3);
+}
+
+/* ============================================================================
+   OVERVIEW
+   ============================================================================ */
+
+/* Overview background */
+.overview-controls {
+    padding-bottom: 32px;
+}
+
+.overview-controls .overview-search-entry {
+    background-color: rgba(15, 10, 26, 0.85);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 12px;
+    color: #e2d9f3;
+    padding: 12px 16px;
+    font-size: 14px;
+    min-width: 400px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.overview-controls .overview-search-entry:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3), 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.overview-controls .overview-search-entry .search-entry-icon {
+    color: #a855f7;
+}
+
+/* Workspace thumbnails */
+.workspace-thumbnail {
+    background-color: rgba(15, 10, 26, 0.6);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 8px;
+}
+
+.workspace-thumbnail:active {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.4);
+}
+
+.workspace-thumbnails {
+    padding: 8px;
+}
+
+/* Window switcher / app switcher */
+.switcher-list {
+    background-color: rgba(15, 10, 26, 0.9);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.switcher-list .item-box {
+    border-radius: 10px;
+    padding: 8px;
+    transition-duration: 200ms;
+}
+
+.switcher-list .item-box:selected {
+    background-color: rgba(124, 58, 237, 0.3);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+}
+
+.switcher-list .item-box:indeterminate {
+    color: #c4b5fd;
+}
+
+/* ============================================================================
+   NOTIFICATIONS
+   ============================================================================ */
+
+.notification-banner {
+    background-color: rgba(15, 10, 26, 0.92);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.notification-banner .notification-title {
+    font-weight: bold;
+    color: #e2d9f3;
+    font-size: 14px;
+}
+
+.notification-banner .notification-body {
+    color: #c4b5fd;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.notification-banner .notification-actions {
+    margin-top: 8px;
+}
+
+.notification-banner .notification-action-button {
+    background-color: rgba(124, 58, 237, 0.2);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    border-radius: 8px;
+    color: #e2d9f3;
+    padding: 6px 16px;
+    font-size: 12px;
+    transition-duration: 200ms;
+}
+
+.notification-banner .notification-action-button:hover {
+    background-color: rgba(124, 58, 237, 0.35);
+}
+
+/* Message tray */
+.message-tray {
+    padding: 8px;
+}
+
+.message-tray .message {
+    background-color: rgba(15, 10, 26, 0.9);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 10px;
+    padding: 12px;
+    margin: 4px 0;
+}
+
+.message-tray .message:hover {
+    background-color: rgba(124, 58, 237, 0.1);
+}
+
+/* ============================================================================
+   DIALOGS & MODALS
+   ============================================================================ */
+
+.modal-dialog {
+    background-color: rgba(15, 10, 26, 0.95);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog .modal-dialog-content-box {
+    spacing: 16px;
+}
+
+.modal-dialog .modal-dialog-button-box {
+    spacing: 8px;
+    margin-top: 16px;
+}
+
+/* Buttons in dialogs */
+.modal-dialog button,
+.notification-banner button {
+    background-color: #7c3aed;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: bold;
+    font-size: 13px;
+    transition-duration: 200ms;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.modal-dialog button:hover,
+.notification-banner button:hover {
+    background-color: #8b5cf6;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.modal-dialog button:active,
+.notification-banner button:active {
+    background-color: #6d28d9;
+}
+
+.modal-dialog button:focus {
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.5);
+}
+
+/* Destructive dialog buttons */
+.modal-dialog button.destructive-action {
+    background-color: #ef4444;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.modal-dialog button.destructive-action:hover {
+    background-color: #dc2626;
+}
+
+/* ============================================================================
+   CALENDAR POPUP
+   ============================================================================ */
+
+.calendar {
+    background-color: rgba(15, 10, 26, 0.95);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.calendar .calendar-month-label {
+    font-weight: bold;
+    color: #e2d9f3;
+    font-size: 14px;
+}
+
+.calendar .calendar-day-heading {
+    color: #a855f7;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.calendar .calendar-day {
+    border-radius: 8px;
+    padding: 6px;
+    color: #e2d9f3;
+    transition-duration: 150ms;
+}
+
+.calendar .calendar-day:hover {
+    background-color: rgba(124, 58, 237, 0.15);
+}
+
+.calendar .calendar-day:active {
+    background-color: rgba(124, 58, 237, 0.25);
+}
+
+.calendar .calendar-today {
+    background-color: #7c3aed;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.calendar .calendar-other-month-day {
+    color: #6b21a8;
+}
+
+/* ============================================================================
+   QUICK SETTINGS
+   ============================================================================ */
+
+/* Quick settings menu (system menu) */
+.quick-settings {
+    background-color: rgba(15, 10, 26, 0.95);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 8px;
+    box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5);
+}
+
+/* Toggle buttons (WiFi, Bluetooth, etc.) */
+.quick-toggle {
+    background-color: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #e2d9f3;
+    transition-duration: 200ms;
+}
+
+.quick-toggle:hover {
+    background-color: rgba(124, 58, 237, 0.15);
+}
+
+.quick-toggle:active {
+    background-color: rgba(124, 58, 237, 0.25);
+}
+
+.quick-toggle:checked {
+    background-color: rgba(124, 58, 237, 0.3);
+    border-color: rgba(124, 58, 237, 0.4);
+    color: #ffffff;
+}
+
+.quick-toggle .quick-toggle-icon {
+    color: #a855f7;
+}
+
+.quick-toggle:checked .quick-toggle-icon {
+    color: #ffffff;
+}
+
+/* Slider (volume, brightness) */
+.quick-slider {
+    padding: 4px 0;
+}
+
+.quick-slider .slider {
+    -slider-handle-border-color: transparent;
+    -slider-handle-border-width: 0;
+    -slider-handle-border-radius: 999px;
+    -slider-handle-background-color: #e2d9f3;
+    -slider-handle-background-gradient-color: #c4b5fd;
+    -slider-track-background-color: rgba(124, 58, 237, 0.15);
+    -slider-track-active-background-color: #7c3aed;
+    height: 6px;
+    border-radius: 3px;
+}
+
+/* ============================================================================
+   LOCK SCREEN
+   ============================================================================ */
+
+.lockDialogGroup {
+    background-color: #0f0a1a;
+    background-image: url("file:///usr/share/backgrounds/nebula-default.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.lockDialogGroup .login-dialog {
+    background-color: rgba(15, 10, 26, 0.85);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 16px;
+    padding: 40px;
+}
+
+.lockDialogGroup .login-dialog .password-entry {
+    background-color: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 8px;
+    color: #e2d9f3;
+    padding: 12px;
+}
+
+.lockDialogGroup .login-dialog .password-entry:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+}
+
+/* ============================================================================
+   SCREENSHOT UI
+   ============================================================================ */
+
+.screenshot-area-background {
+    background-color: rgba(15, 10, 26, 0.3);
+}
+
+.screenshot-ui {
+    background-color: rgba(15, 10, 26, 0.9);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.screenshot-ui .screenshot-ui-button {
+    background-color: rgba(124, 58, 237, 0.15);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 10px;
+    color: #e2d9f3;
+    padding: 12px;
+    transition-duration: 200ms;
+}
+
+.screenshot-ui .screenshot-ui-button:hover {
+    background-color: rgba(124, 58, 237, 0.25);
+}
+
+.screenshot-ui .screenshot-ui-button:active,
+.screenshot-ui .screenshot-ui-button:checked {
+    background-color: #7c3aed;
+    color: #ffffff;
+}
+
+/* ============================================================================
+   LOOKING GLASS (Debug Tool)
+   ============================================================================ */
+
+._lg-dialog {
+    background-color: rgba(15, 10, 26, 0.95);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+._lg-dialog .shell-link {
+    color: #a855f7;
+}
+
+._lg-dialog .shell-link:hover {
+    color: #c084fc;
+}
+
+/* ============================================================================
+   OSD (On-Screen Display)
+   ============================================================================ */
+
+.on-screen-display {
+    background-color: rgba(15, 10, 26, 0.85);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px;
+}
+
+.on-screen-display .level {
+    background-color: rgba(124, 58, 237, 0.15);
+    border-radius: 4px;
+    height: 6px;
+}
+
+.on-screen-display .level:backdrop {
+    background-color: rgba(124, 58, 237, 0.08);
+}
+
+/* ============================================================================
+   WORLD CLOCK
+   ============================================================================ */
+
+.world-clocks {
+    background-color: rgba(15, 10, 26, 0.85);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.world-clocks .world-clock-entry {
+    padding: 8px;
+    border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+}
+
+.world-clocks .world-clock-entry:last-child {
+    border-bottom: none;
+}
+
+/* ============================================================================
+   WEATHER
+   ============================================================================ */
+
+.weather-box {
+    background-color: rgba(15, 10, 26, 0.85);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* ============================================================================
+   TOOLTIPS
+   ============================================================================ */
+
+.tooltip {
+    background-color: rgba(15, 10, 26, 0.95);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #e2d9f3;
+    font-size: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================================
+   POPUP MENU
+   ============================================================================ */
+
+.popup-menu {
+    background-color: rgba(15, 10, 26, 0.95);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.popup-menu .popup-menu-item {
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #e2d9f3;
+    transition-duration: 150ms;
+}
+
+.popup-menu .popup-menu-item:hover {
+    background-color: rgba(124, 58, 237, 0.15);
+}
+
+.popup-menu .popup-menu-item:active {
+    background-color: rgba(124, 58, 237, 0.25);
+}
+
+.popup-menu .popup-menu-item:disabled {
+    color: #6b21a8;
+}
+
+.popup-menu .popup-separator-menu-item {
+    margin: 4px 8px;
+    border-color: rgba(124, 58, 237, 0.15);
+}
+
+.popup-menu .popup-sub-menu {
+    background-color: rgba(15, 10, 26, 0.95);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 10px;
+}
+
+/* ============================================================================
+   PADDING / MARGINS (common utilities)
+   ============================================================================ */
+
+.popup-menu-content {
+    padding: 8px;
+}
+
+.popup-menu-pointer-item {
+    padding: 8px 16px;
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: 0ms !important;
+        animation-duration: 0ms !important;
+    }
+}

@@ -1,0 +1,6 @@
+/* ==========================================================================
+   NebulaOS GNOME Shell High Contrast Theme
+   Imports the main theme for high contrast compatibility
+   ========================================================================== */
+
+@import url("gnome-shell.css");

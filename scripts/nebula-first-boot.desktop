@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=NebulaOS First Boot Setup
+Comment=Initial setup for NebulaOS
+Exec=/usr/share/nebulaos/nebula-first-boot.sh
+Terminal=false
+Hidden=false
+X-GNOME-Autostart-enabled=true

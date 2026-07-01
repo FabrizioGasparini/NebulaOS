@@ -1,0 +1,1949 @@
+/* =============================================================================
+   Nebula GTK3 Theme - Dark Violet Glassmorphism
+   A polished macOS-inspired dark theme for NebulaOS
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   Color Definitions
+   --------------------------------------------------------------------------- */
+@define-color theme_bg_color #0f0a1a;
+@define-color theme_fg_color #e2d9f3;
+@define-color theme_base_color #130e22;
+@define-color theme_text_color #e2d9f3;
+@define-color theme_selected_bg_color #7c3aed;
+@define-color theme_selected_fg_color #ffffff;
+@define-color theme_tooltip_bg_color #1a1128;
+@define-color theme_tooltip_fg_color #e2d9f3;
+
+@define-color NebulaPrimary #7c3aed;
+@define-color NebulaSecondary #a855f7;
+@define-color NebulaSurface rgba(124, 58, 237, 0.08);
+@define-color NebulaBorder rgba(124, 58, 237, 0.2);
+@define-color NebulaHover rgba(124, 58, 237, 0.15);
+@define-color NebulaActive rgba(124, 58, 237, 0.25);
+@define-color NebulaHeaderbar #130e22;
+@define-color NebulaSidebar #0d0916;
+@define-color NebulaView #130e22;
+
+@define-color ins_color #22c55e;
+@define-color fg_color #e2d9f3;
+@define-color error_color #ef4444;
+@define-color success_color #22c55e;
+@define-color warning_color #f59e0b;
+@define-color destructive_color #ef4444;
+@define-color content_view_bg #130e22;
+@define-color headerbar_bg_color #130e22;
+@define-color card_bg_color #1a1128;
+@define-color dialog_bg_color #1a1128;
+
+/* ---------------------------------------------------------------------------
+   Global Defaults
+   --------------------------------------------------------------------------- */
+* {
+    -GtkWidget-text-handle-width: 20;
+    -GtkWidget-text-handle-height: 24;
+    -GtkTextView-error-underline-color: @error_color;
+
+    outline-color: alpha(@NebulaPrimary, 0.5);
+    outline-style: dashed;
+    outline-offset: -3px;
+    outline-width: 1px;
+
+    -gtk-outline-radius: 6px;
+    -gtk-secondary-caret-color: @NebulaPrimary;
+}
+
+/* Global transitions */
+button, entry, scale, switch, combobox, notebook tab,
+headerbar, sidebar, menubar, menu, tooltip,
+searchbar, toolbar, infobar, levelbar, progressbar,
+scale marks, scale value {
+    transition: all 200ms ease-out;
+}
+
+/* ---------------------------------------------------------------------------
+   Window & Root
+   --------------------------------------------------------------------------- */
+window,
+.background {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+
+decoration {
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(124, 58, 237, 0.1);
+    margin: 8px;
+    border: 1px solid @NebulaBorder;
+}
+
+decoration:backdrop {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+                0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+   Headerbar / Titlebar
+   --------------------------------------------------------------------------- */
+headerbar,
+.titlebar,
+ decoration titlebar {
+    background: linear-gradient(180deg,
+                rgba(19, 14, 34, 0.98) 0%,
+                rgba(15, 10, 26, 0.95) 100%);
+    color: @theme_fg_color;
+    border-bottom: 1px solid @NebulaBorder;
+    padding: 4px 6px;
+    min-height: 42px;
+}
+
+headerbar:backdrop,
+.titlebar:backdrop {
+    background: linear-gradient(180deg,
+                rgba(15, 10, 26, 0.95) 0%,
+                rgba(12, 8, 22, 0.92) 100%);
+}
+
+headerbar .title,
+.titlebar .title {
+    font-weight: 600;
+    font-size: 13px;
+    color: @theme_fg_color;
+}
+
+headerbar .subtitle,
+.titlebar .subtitle {
+    font-size: 11px;
+    color: alpha(@theme_fg_color, 0.6);
+}
+
+/* macOS-style window controls on the right */
+headerbar button.titlebutton,
+headerbar button.titlebutton:first-child,
+headerbar button.titlebutton:last-child,
+headerbar button.titlebutton:nth-child(1),
+headerbar button.titlebutton:nth-child(2),
+headerbar button.titlebutton:nth-child(3) {
+    min-width: 14px;
+    min-height: 14px;
+    padding: 0;
+    border-radius: 50%;
+    border: none;
+    margin: 0 3px;
+}
+
+headerbar button.titlebutton.close {
+    background-color: #ff5f57;
+    color: #8a0000;
+}
+
+headerbar button.titlebutton.close:hover {
+    background-color: #ff4040;
+    color: #6a0000;
+}
+
+headerbar button.titlebutton.maximize {
+    background-color: #febc2e;
+    color: #8a6600;
+}
+
+headerbar button.titlebutton.maximize:hover {
+    background-color: #ffa500;
+    color: #6a4400;
+}
+
+headerbar button.titlebutton.minimize {
+    background-color: #28c840;
+    color: #006a00;
+}
+
+headerbar button.titlebutton.minimize:hover {
+    background-color: #20b030;
+    color: #005000;
+}
+
+/* Pack widgets in headerbar */
+headerbar * {
+    color: @theme_fg_color;
+}
+
+headerbar:backdrop * {
+    color: alpha(@theme_fg_color, 0.7);
+}
+
+/* ---------------------------------------------------------------------------
+   Buttons
+   --------------------------------------------------------------------------- */
+button {
+    background-image: linear-gradient(180deg,
+                    rgba(124, 58, 237, 0.12) 0%,
+                    rgba(124, 58, 237, 0.06) 100%);
+    background-color: transparent;
+    border: 1px solid @NebulaBorder;
+    border-radius: 8px;
+    color: @theme_fg_color;
+    padding: 6px 14px;
+    min-height: 20px;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-image: linear-gradient(180deg,
+                    rgba(124, 58, 237, 0.22) 0%,
+                    rgba(124, 58, 237, 0.15) 100%);
+    border-color: alpha(@NebulaPrimary, 0.4);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+button:active,
+button:checked {
+    background-image: linear-gradient(180deg,
+                    rgba(124, 58, 237, 0.3) 0%,
+                    rgba(124, 58, 237, 0.2) 100%);
+    border-color: @NebulaPrimary;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+button:disabled {
+    background-image: none;
+    background-color: alpha(@NebulaPrimary, 0.05);
+    border-color: alpha(@NebulaBorder, 0.5);
+    color: alpha(@theme_fg_color, 0.35);
+    box-shadow: none;
+}
+
+button:backdrop {
+    background-image: linear-gradient(180deg,
+                    rgba(124, 58, 237, 0.08) 0%,
+                    rgba(124, 58, 237, 0.04) 100%);
+    border-color: @NebulaBorder;
+    color: alpha(@theme_fg_color, 0.7);
+}
+
+/* Suggested (primary) action button */
+button.suggested-action {
+    background-image: linear-gradient(180deg,
+                    rgba(124, 58, 237, 0.9) 0%,
+                    rgba(109, 40, 217, 0.95) 100%);
+    background-color: @NebulaPrimary;
+    border-color: alpha(@NebulaPrimary, 0.8);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+}
+
+button.suggested-action:hover {
+    background-image: linear-gradient(180deg,
+                    rgba(139, 69, 247, 0.95) 0%,
+                    rgba(124, 58, 237, 1) 100%);
+    border-color: @NebulaSecondary;
+    box-shadow: 0 3px 8px rgba(124, 58, 237, 0.5);
+}
+
+button.suggested-action:active {
+    background-image: linear-gradient(180deg,
+                    rgba(109, 40, 217, 1) 0%,
+                    rgba(91, 33, 200, 1) 100%);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Destructive action button */
+button.destructive-action {
+    background-image: linear-gradient(180deg,
+                    rgba(239, 68, 68, 0.9) 0%,
+                    rgba(220, 38, 38, 0.95) 100%);
+    background-color: @destructive_color;
+    border-color: alpha(@destructive_color, 0.8);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+}
+
+button.destructive-action:hover {
+    background-image: linear-gradient(180deg,
+                    rgba(248, 113, 113, 0.95) 0%,
+                    rgba(239, 68, 68, 1) 100%);
+    box-shadow: 0 3px 8px rgba(239, 68, 68, 0.4);
+}
+
+/* Flat button */
+button.flat {
+    background-image: none;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    color: @NebulaSecondary;
+}
+
+button.flat:hover {
+    background-image: none;
+    background-color: alpha(@NebulaPrimary, 0.12);
+    border-color: transparent;
+    color: @NebulaSecondary;
+}
+
+button.flat:active {
+    background-color: alpha(@NebulaPrimary, 0.2);
+}
+
+/* Linked buttons (e.g. in toolbar) */
+.linked > button {
+    border-radius: 0;
+}
+
+.linked > button:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.linked > button:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.linked > button:only-child {
+    border-radius: 8px;
+}
+
+/* ---------------------------------------------------------------------------
+   Entries / Text Inputs
+   --------------------------------------------------------------------------- */
+entry,
+spinbutton {
+    background-color: rgba(19, 14, 34, 0.6);
+    border: 1px solid @NebulaBorder;
+    border-radius: 6px;
+    color: @theme_fg_color;
+    padding: 6px 10px;
+    min-height: 20px;
+    caret-color: @NebulaPrimary;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+entry:focus,
+spinbutton:focus {
+    border-color: @NebulaPrimary;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2),
+                0 0 0 3px alpha(@NebulaPrimary, 0.2);
+}
+
+entry:disabled,
+spinbutton:disabled {
+    background-color: alpha(@NebulaPrimary, 0.04);
+    border-color: alpha(@NebulaBorder, 0.4);
+    color: alpha(@theme_fg_color, 0.35);
+}
+
+entry selection,
+spinbutton selection {
+    background-color: alpha(@NebulaPrimary, 0.5);
+    color: @theme_fg_color;
+}
+
+entry placeholder,
+spinbutton placeholder {
+    color: alpha(@theme_fg_color, 0.35);
+}
+
+/* Search entry */
+entry.search {
+    border-radius: 20px;
+    padding: 6px 14px;
+    background-color: rgba(19, 14, 34, 0.8);
+    border: 1px solid @NebulaBorder;
+}
+
+entry.search:focus {
+    border-color: @NebulaPrimary;
+    background-color: rgba(19, 14, 34, 0.9);
+}
+
+/* ---------------------------------------------------------------------------
+   Spinbutton
+   --------------------------------------------------------------------------- */
+spinbutton button {
+    min-width: 32px;
+    border: none;
+    border-radius: 0;
+    background-image: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+spinbutton button:hover {
+    background-color: alpha(@NebulaPrimary, 0.15);
+}
+
+spinbutton button:active {
+    background-color: alpha(@NebulaPrimary, 0.25);
+}
+
+spinbutton button:first-child {
+    border-radius: 6px 0 0 6px;
+    border-right: 1px solid @NebulaBorder;
+}
+
+spinbutton button:last-child {
+    border-radius: 0 6px 6px 0;
+    border-left: 1px solid @NebulaBorder;
+}
+
+/* ---------------------------------------------------------------------------
+   Labels
+   --------------------------------------------------------------------------- */
+label {
+    color: @theme_fg_color;
+}
+
+label:disabled {
+    color: alpha(@theme_fg_color, 0.35);
+}
+
+label.dim-label {
+    color: alpha(@theme_fg_color, 0.55);
+}
+
+label selection {
+    background-color: alpha(@NebulaPrimary, 0.5);
+    color: @theme_fg_color;
+}
+
+/* ---------------------------------------------------------------------------
+   Check & Radio Buttons
+   --------------------------------------------------------------------------- */
+check,
+radio {
+    -gtk-icon-source: none;
+    background-color: rgba(19, 14, 34, 0.6);
+    border: 2px solid @NebulaBorder;
+    border-radius: 4px;
+    min-width: 18px;
+    min-height: 18px;
+    margin: 2px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+check:hover,
+radio:hover {
+    border-color: @NebulaPrimary;
+    background-color: alpha(@NebulaPrimary, 0.1);
+}
+
+check:checked,
+radio:checked {
+    background-color: @NebulaPrimary;
+    border-color: @NebulaPrimary;
+    color: #ffffff;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+check:checked:hover,
+radio:checked:hover {
+    background-color: @NebulaSecondary;
+    border-color: @NebulaSecondary;
+}
+
+check:disabled,
+radio:disabled {
+    background-color: alpha(@NebulaPrimary, 0.04);
+    border-color: alpha(@NebulaBorder, 0.4);
+}
+
+check:checked:disabled,
+radio:checked:disabled {
+    background-color: alpha(@NebulaPrimary, 0.3);
+    border-color: alpha(@NebulaPrimary, 0.3);
+}
+
+radio {
+    border-radius: 50%;
+}
+
+/* Indeterminate / mixed state */
+check:indeterminate {
+    background-color: @NebulaPrimary;
+    border-color: @NebulaPrimary;
+}
+
+/* ---------------------------------------------------------------------------
+   Switches
+   --------------------------------------------------------------------------- */
+switch {
+    background-color: rgba(19, 14, 34, 0.6);
+    border: 2px solid @NebulaBorder;
+    border-radius: 16px;
+    min-width: 48px;
+    min-height: 26px;
+    padding: 2px;
+}
+
+switch:hover {
+    border-color: alpha(@NebulaPrimary, 0.4);
+}
+
+switch:checked {
+    background-color: @NebulaPrimary;
+    border-color: @NebulaPrimary;
+}
+
+switch:disabled {
+    background-color: alpha(@NebulaPrimary, 0.08);
+    border-color: alpha(@NebulaBorder, 0.3);
+    opacity: 0.5;
+}
+
+switch slider {
+    background-color: #e2d9f3;
+    border-radius: 50%;
+    min-width: 20px;
+    min-height: 20px;
+    margin: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 200ms ease-out;
+}
+
+switch:checked slider {
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------------------------------------------------------------------------
+   Scale / Slider
+   --------------------------------------------------------------------------- */
+scale {
+    min-height: 10px;
+    min-width: 10px;
+    padding: 12px;
+}
+
+scale trough {
+    background-color: rgba(19, 14, 34, 0.8);
+    border: 1px solid @NebulaBorder;
+    border-radius: 99px;
+    min-height: 6px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+scale highlight {
+    background: linear-gradient(90deg,
+                @NebulaPrimary 0%,
+                @NebulaSecondary 100%);
+    border-radius: 99px;
+    min-height: 6px;
+}
+
+scale slider {
+    background-color: #ffffff;
+    border: 2px solid @NebulaPrimary;
+    border-radius: 50%;
+    min-width: 18px;
+    min-height: 18px;
+    margin: -6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4),
+                0 0 0 3px alpha(@NebulaPrimary, 0.15);
+    transition: box-shadow 200ms ease-out;
+}
+
+scale slider:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5),
+                0 0 0 5px alpha(@NebulaPrimary, 0.2);
+}
+
+scale slider:active {
+    background-color: @NebulaPrimary;
+    border-color: @NebulaSecondary;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.5),
+                0 0 0 6px alpha(@NebulaPrimary, 0.25);
+}
+
+scale slider:disabled {
+    background-color: alpha(@theme_fg_color, 0.2);
+    border-color: alpha(@NebulaBorder, 0.4);
+    box-shadow: none;
+}
+
+scale marks mark indicator {
+    background-color: alpha(@theme_fg_color, 0.35);
+    min-width: 2px;
+    min-height: 6px;
+    border-radius: 1px;
+}
+
+scale marks mark indicator highlight {
+    background-color: @NebulaPrimary;
+}
+
+scale trough:disabled {
+    background-color: alpha(@NebulaPrimary, 0.04);
+}
+
+scale highlight:disabled {
+    background-color: alpha(@NebulaPrimary, 0.15);
+}
+
+/* Vertical scales */
+scale:vertical {
+    min-height: 100px;
+    min-width: 10px;
+}
+
+scale:vertical trough {
+    min-width: 6px;
+    min-height: 100%;
+}
+
+scale:vertical highlight {
+    min-width: 6px;
+}
+
+scale:vertical slider {
+    margin: -6px;
+}
+
+/* ---------------------------------------------------------------------------
+   Level Bar
+   --------------------------------------------------------------------------- */
+levelbar trough {
+    background-color: rgba(19, 14, 34, 0.8);
+    border: 1px solid @NebulaBorder;
+    border-radius: 99px;
+    min-height: 6px;
+    padding: 0;
+}
+
+levelbar block {
+    border-radius: 99px;
+    min-height: 6px;
+}
+
+levelbar block.filled {
+    background: linear-gradient(90deg,
+                @NebulaPrimary 0%,
+                @NebulaSecondary 100%);
+}
+
+levelbar block.empty {
+    background-color: transparent;
+}
+
+levelbar block.low {
+    background-color: @warning_color;
+}
+
+levelbar block.high {
+    background: linear-gradient(90deg,
+                @NebulaPrimary 0%,
+                @NebulaSecondary 100%);
+}
+
+levelbar block.full {
+    background-color: @success_color;
+}
+
+levelbar block.empty:backdrop {
+    background-color: alpha(@theme_fg_color, 0.08);
+}
+
+/* ---------------------------------------------------------------------------
+   Progress Bar
+   --------------------------------------------------------------------------- */
+progressbar trough {
+    background-color: rgba(19, 14, 34, 0.8);
+    border: 1px solid @NebulaBorder;
+    border-radius: 99px;
+    min-height: 6px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+progressbar progress {
+    background: linear-gradient(90deg,
+                @NebulaPrimary 0%,
+                @NebulaSecondary 100%);
+    border-radius: 99px;
+    min-height: 6px;
+    box-shadow: 0 0 6px alpha(@NebulaPrimary, 0.4);
+}
+
+progressbar.vertical trough {
+    min-width: 6px;
+    min-height: 100px;
+}
+
+progressbar.vertical progress {
+    min-width: 6px;
+}
+
+/* Osborne mode (indeterminate) */
+progressbar.osborne trough,
+progressbar.osborne progress {
+    min-height: 6px;
+}
+
+/* ---------------------------------------------------------------------------
+   Notebook / Tabs
+   --------------------------------------------------------------------------- */
+notebook {
+    background-color: @theme_bg_color;
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+}
+
+notebook > header {
+    background-color: rgba(19, 14, 34, 0.4);
+    border: none;
+    border-radius: 12px 12px 0 0;
+    padding: 0 4px;
+}
+
+notebook > header.top {
+    border-bottom: 1px solid @NebulaBorder;
+}
+
+notebook > header.bottom {
+    border-top: 1px solid @NebulaBorder;
+    border-radius: 0 0 12px 12px;
+}
+
+notebook > header.left {
+    border-right: 1px solid @NebulaBorder;
+    border-radius: 12px 0 0 12px;
+}
+
+notebook > header.right {
+    border-left: 1px solid @NebulaBorder;
+    border-radius: 0 12px 12px 0;
+}
+
+notebook > header tab {
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: alpha(@theme_fg_color, 0.6);
+    padding: 6px 14px;
+    min-height: 20px;
+    margin: 2px;
+}
+
+notebook > header tab:hover {
+    background-color: alpha(@NebulaPrimary, 0.1);
+    color: @theme_fg_color;
+}
+
+notebook > header tab:checked {
+    background-color: alpha(@NebulaPrimary, 0.18);
+    color: @theme_fg_color;
+    font-weight: 500;
+    box-shadow: inset 0 -2px 0 @NebulaPrimary;
+}
+
+notebook > header tab:checked:hover {
+    background-color: alpha(@NebulaPrimary, 0.25);
+}
+
+notebook > header tab:backdrop {
+    color: alpha(@theme_fg_color, 0.4);
+}
+
+notebook > header tab:checked:backdrop {
+    background-color: alpha(@NebulaPrimary, 0.1);
+    color: alpha(@theme_fg_color, 0.7);
+}
+
+notebook > header tab label {
+    font-size: 13px;
+}
+
+notebook > header tab:checked label {
+    color: @theme_fg_color;
+}
+
+notebook > header tab:backdrop label {
+    color: alpha(@theme_fg_color, 0.4);
+}
+
+notebook > header tab:checked:backdrop label {
+    color: alpha(@theme_fg_color, 0.7);
+}
+
+notebook > header tab arrow {
+    color: alpha(@theme_fg_color, 0.4);
+}
+
+notebook > header tab:checked arrow {
+    color: @theme_fg_color;
+}
+
+/* Notebook border */
+notebook > header tab:first-child {
+    margin-left: 2px;
+}
+
+notebook > header tab:last-child {
+    margin-right: 2px;
+}
+
+notebook > stack {
+    background-color: @theme_bg_color;
+    border-radius: 0 0 12px 12px;
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar
+   --------------------------------------------------------------------------- */
+.sidebar,
+placessidebar,
+sidebar > list,
+.sidebar > box {
+    background-color: @NebulaSidebar;
+    color: @theme_fg_color;
+    border-right: 1px solid @NebulaBorder;
+}
+
+.sidebar row,
+placessidebar row,
+.sidebar > list row {
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin: 2px 4px;
+    min-height: 32px;
+}
+
+.sidebar row:hover,
+placessidebar row:hover,
+.sidebar > list row:hover {
+    background-color: alpha(@NebulaPrimary, 0.1);
+}
+
+.sidebar row:selected,
+placessidebar row:selected,
+.sidebar > list row:selected {
+    background-color: alpha(@NebulaPrimary, 0.2);
+    color: @theme_fg_color;
+}
+
+.sidebar row:selected label,
+.sidebar row:selected image {
+    color: @theme_fg_color;
+}
+
+.sidebar row:backdrop {
+    color: alpha(@theme_fg_color, 0.6);
+}
+
+.sidebar row:selected:backdrop {
+    background-color: alpha(@NebulaPrimary, 0.12);
+    color: alpha(@theme_fg_color, 0.8);
+}
+
+/* Places sidebar specific styling */
+.sidebar row.sidebar-button {
+    border-radius: 8px;
+}
+
+.sidebar row.sidebar-button:hover {
+    background-color: alpha(@NebulaPrimary, 0.12);
+}
+
+/* ListBox in sidebar */
+.sidebar list {
+    background-color: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   Menus & Popovers
+   --------------------------------------------------------------------------- */
+menu,
+popover.background,
+.menu,
+.popover {
+    background-color: rgba(26, 17, 40, 0.95);
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5),
+                0 2px 6px rgba(0, 0, 0, 0.3);
+    color: @theme_fg_color;
+}
+
+popover.background {
+    padding: 8px;
+}
+
+menuitem,
+menu menuitem,
+popover menuitem {
+    padding: 6px 12px;
+    border-radius: 6px;
+    min-height: 28px;
+    color: @theme_fg_color;
+}
+
+menuitem:hover,
+menu menuitem:hover,
+popover menuitem:hover {
+    background-color: alpha(@NebulaPrimary, 0.15);
+    color: @theme_fg_color;
+}
+
+menuitem:disabled,
+menu menuitem:disabled,
+popover menuitem:disabled {
+    color: alpha(@theme_fg_color, 0.35);
+}
+
+menuitem accelerator,
+menu menuitem accelerator,
+popover menuitem accelerator {
+    color: alpha(@theme_fg_color, 0.45);
+}
+
+menuitem arrow,
+menu menuitem arrow,
+popover menuitem arrow {
+    color: alpha(@theme_fg_color, 0.5);
+}
+
+menu separator,
+popover separator {
+    background-color: @NebulaBorder;
+    margin: 4px 8px;
+    min-height: 1px;
+}
+
+/* Menu bar */
+menubar {
+    background-color: @theme_bg_color;
+    border-bottom: 1px solid @NebulaBorder;
+    padding: 0 4px;
+    color: @theme_fg_color;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+menubar > menuitem {
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+menubar > menuitem:hover {
+    background-color: alpha(@NebulaPrimary, 0.12);
+}
+
+/* Popover menu */
+popover.background menuitem {
+    padding: 6px 12px;
+}
+
+/* Context menu */
+.context-menu {
+    background-color: rgba(26, 17, 40, 0.95);
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------------------------------------------------------------------------
+   Tooltip
+   --------------------------------------------------------------------------- */
+tooltip,
+tooltip.background {
+    background-color: rgba(26, 17, 40, 0.95);
+    border: 1px solid @NebulaBorder;
+    border-radius: 8px;
+    color: @theme_fg_color;
+    padding: 6px 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+tooltip label {
+    color: @theme_fg_color;
+    font-size: 12px;
+}
+
+tooltip * {
+    color: @theme_fg_color;
+}
+
+/* ---------------------------------------------------------------------------
+   Toolbar
+   --------------------------------------------------------------------------- */
+toolbar,
+.header-bar {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+toolbar button {
+    background-image: none;
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    box-shadow: none;
+    padding: 4px 8px;
+}
+
+toolbar button:hover {
+    background-color: alpha(@NebulaPrimary, 0.12);
+}
+
+toolbar button:active {
+    background-color: alpha(@NebulaPrimary, 0.2);
+}
+
+toolbar separator {
+    background-color: @NebulaBorder;
+    min-width: 1px;
+    min-height: 20px;
+    margin: 4px 6px;
+}
+
+/* ---------------------------------------------------------------------------
+   InfoBar
+   --------------------------------------------------------------------------- */
+infobar {
+    border-radius: 0;
+    border: none;
+    padding: 8px 12px;
+    min-height: 20px;
+}
+
+infobar.info {
+    background-color: alpha(@NebulaPrimary, 0.15);
+    color: @theme_fg_color;
+    border-bottom: 1px solid @NebulaBorder;
+}
+
+infobar.warning {
+    background-color: alpha(@warning_color, 0.15);
+    color: @theme_fg_color;
+    border-bottom: 1px solid alpha(@warning_color, 0.3);
+}
+
+infobar.error {
+    background-color: alpha(@error_color, 0.15);
+    color: @theme_fg_color;
+    border-bottom: 1px solid alpha(@error_color, 0.3);
+}
+
+infobar.question {
+    background-color: alpha(@NebulaSecondary, 0.15);
+    color: @theme_fg_color;
+    border-bottom: 1px solid alpha(@NebulaSecondary, 0.3);
+}
+
+infobar button {
+    border-radius: 6px;
+    padding: 4px 10px;
+}
+
+/* ---------------------------------------------------------------------------
+   Dialog
+   --------------------------------------------------------------------------- */
+messagedialog .titlebar {
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid @NebulaBorder;
+}
+
+messagedialog .dialog-action-area button {
+    border-radius: 0;
+    min-height: 36px;
+    padding: 8px 16px;
+}
+
+messagedialog .dialog-action-area button:first-child {
+    border-radius: 0 0 0 12px;
+}
+
+messagedialog .dialog-action-area button:last-child {
+    border-radius: 0 0 12px 0;
+}
+
+messagedialog label {
+    padding: 8px;
+    color: @theme_fg_color;
+}
+
+/* File chooser dialog */
+filechooser {
+    background-color: @theme_bg_color;
+}
+
+/* ---------------------------------------------------------------------------
+   Scrollbars
+   --------------------------------------------------------------------------- */
+scrollbar {
+    background-color: transparent;
+    border: none;
+    transition: all 200ms ease-out;
+}
+
+scrollbar slider {
+    background-color: alpha(@theme_fg_color, 0.15);
+    border: none;
+    border-radius: 99px;
+    min-width: 6px;
+    min-height: 6px;
+    margin: 3px;
+    transition: all 200ms ease-out;
+}
+
+scrollbar slider:hover {
+    background-color: alpha(@theme_fg_color, 0.3);
+    min-width: 8px;
+    min-height: 8px;
+}
+
+scrollbar slider:active {
+    background-color: alpha(@NebulaPrimary, 0.5);
+}
+
+scrollbar.overlay-indicator:not(.dragging):not(.hovering) {
+    opacity: 0.4;
+}
+
+scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider {
+    min-width: 4px;
+    min-height: 4px;
+    margin: 6px;
+}
+
+/* Horizontal scrollbar */
+scrollbar.horizontal slider {
+    min-height: 6px;
+    min-width: 40px;
+}
+
+/* Vertical scrollbar */
+scrollbar.vertical slider {
+    min-width: 6px;
+    min-height: 40px;
+}
+
+/* Scrollbar in text views */
+textview scrollbar {
+    background-color: rgba(19, 14, 34, 0.3);
+}
+
+/* ---------------------------------------------------------------------------
+   Scrolled Window
+   --------------------------------------------------------------------------- */
+scrolledwindow {
+    border: none;
+}
+
+scrolledwindow > overshoot.top {
+    background: linear-gradient(180deg,
+                alpha(@NebulaPrimary, 0.3) 0%,
+                transparent 100%);
+}
+
+scrolledwindow > overshoot.bottom {
+    background: linear-gradient(0deg,
+                alpha(@NebulaPrimary, 0.3) 0%,
+                transparent 100%);
+}
+
+scrolledwindow > overshoot.left {
+    background: linear-gradient(90deg,
+                alpha(@NebulaPrimary, 0.3) 0%,
+                transparent 100%);
+}
+
+scrolledwindow > overshoot.right {
+    background: linear-gradient(270deg,
+                alpha(@NebulaPrimary, 0.3) 0%,
+                transparent 100%);
+}
+
+/* ---------------------------------------------------------------------------
+   TreeView / IconView
+   --------------------------------------------------------------------------- */
+treeview,
+iconview {
+    background-color: @NebulaView;
+    color: @theme_fg_color;
+    border-color: @NebulaBorder;
+}
+
+treeview header button,
+treeview header button:backdrop {
+    background: linear-gradient(180deg,
+                rgba(19, 14, 34, 0.6) 0%,
+                rgba(15, 10, 26, 0.8) 100%);
+    border: 1px solid @NebulaBorder;
+    border-radius: 0;
+    color: @theme_fg_color;
+    padding: 6px 10px;
+    font-weight: 500;
+    box-shadow: none;
+}
+
+treeview header button:first-child {
+    border-radius: 8px 0 0 0;
+}
+
+treeview header button:last-child {
+    border-radius: 0 8px 0 0;
+}
+
+treeview header button:hover {
+    background: linear-gradient(180deg,
+                rgba(124, 58, 237, 0.2) 0%,
+                rgba(124, 58, 237, 0.12) 100%);
+}
+
+treeview:hover {
+    background-color: alpha(@NebulaPrimary, 0.08);
+}
+
+treeview:selected,
+iconview:selected {
+    background-color: alpha(@NebulaPrimary, 0.3);
+    color: @theme_fg_color;
+}
+
+treeview:selected:backdrop,
+iconview:selected:backdrop {
+    background-color: alpha(@NebulaPrimary, 0.15);
+    color: alpha(@theme_fg_color, 0.8);
+}
+
+treeview header button:backdrop {
+    background: rgba(15, 10, 26, 0.6);
+    color: alpha(@theme_fg_color, 0.6);
+}
+
+treeview grid line {
+    color: alpha(@NebulaBorder, 0.5);
+}
+
+/* ---------------------------------------------------------------------------
+   ListBox / List
+   --------------------------------------------------------------------------- */
+list,
+listbox {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+
+list row,
+listbox row {
+    padding: 6px;
+    border-radius: 0;
+    min-height: 32px;
+}
+
+list row:hover,
+listbox row:hover {
+    background-color: alpha(@NebulaPrimary, 0.08);
+}
+
+list row:selected,
+listbox row:selected {
+    background-color: alpha(@NebulaPrimary, 0.2);
+    color: @theme_fg_color;
+}
+
+list row:selected:hover,
+listbox row:selected:hover {
+    background-color: alpha(@NebulaPrimary, 0.28);
+}
+
+list row:selected:backdrop,
+listbox row:selected:backdrop {
+    background-color: alpha(@NebulaPrimary, 0.12);
+}
+
+list row.activatable:hover,
+listbox row.activatable:hover {
+    background-color: alpha(@NebulaPrimary, 0.08);
+}
+
+list row.activatable:active,
+listbox row.activatable:active {
+    background-color: alpha(@NebulaPrimary, 0.18);
+}
+
+/* ---------------------------------------------------------------------------
+   Frame
+   --------------------------------------------------------------------------- */
+frame > border {
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+}
+
+/* ---------------------------------------------------------------------------
+   Separator
+   --------------------------------------------------------------------------- */
+separator {
+    background-color: @NebulaBorder;
+    min-height: 1px;
+    min-width: 1px;
+}
+
+separator.vertical {
+    min-height: 1px;
+    min-width: 1px;
+}
+
+/* In menus */
+menu separator,
+popover separator {
+    margin: 4px 8px;
+}
+
+/* ---------------------------------------------------------------------------
+   Stack Switcher / Page Switcher
+   --------------------------------------------------------------------------- */
+stackswitcher button,
+linked > button {
+    background-image: none;
+    background-color: transparent;
+    border-color: @NebulaBorder;
+    box-shadow: none;
+    color: alpha(@theme_fg_color, 0.7);
+}
+
+stackswitcher button:hover,
+linked > button:hover {
+    background-color: alpha(@NebulaPrimary, 0.1);
+    color: @theme_fg_color;
+}
+
+stackswitcher button:checked,
+linked > button:checked {
+    background-color: alpha(@NebulaPrimary, 0.2);
+    border-color: @NebulaPrimary;
+    color: @theme_fg_color;
+    box-shadow: none;
+}
+
+stackswitcher button:first-child,
+linked > button:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+stackswitcher button:last-child,
+linked > button:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+stackswitcher button:only-child,
+linked > button:only-child {
+    border-radius: 8px;
+}
+
+/* ---------------------------------------------------------------------------
+   Action Bar
+   --------------------------------------------------------------------------- */
+actionbar {
+    background-color: rgba(15, 10, 26, 0.95);
+    border-top: 1px solid @NebulaBorder;
+    padding: 6px;
+}
+
+/* ---------------------------------------------------------------------------
+   SearchBar
+   --------------------------------------------------------------------------- */
+searchbar {
+    background-color: rgba(19, 14, 34, 0.95);
+    border-bottom: 1px solid @NebulaBorder;
+    padding: 6px 8px;
+}
+
+searchbar row {
+    background-color: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   Header Group / Preferences
+   --------------------------------------------------------------------------- */
+headergroup {
+    background-color: rgba(19, 14, 34, 0.4);
+    border-bottom: 1px solid @NebulaBorder;
+    border-radius: 12px 12px 0 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Paned / Dividers
+   --------------------------------------------------------------------------- */
+paned > separator {
+    min-width: 2px;
+    min-height: 2px;
+    background-color: @NebulaBorder;
+}
+
+paned > separator:hover {
+    background-color: alpha(@NebulaPrimary, 0.4);
+}
+
+paned > separator:active {
+    background-color: @NebulaPrimary;
+}
+
+/* ---------------------------------------------------------------------------
+   Expander
+   --------------------------------------------------------------------------- */
+expander arrow {
+    color: @theme_fg_color;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+expander arrow:hover {
+    color: @NebulaSecondary;
+}
+
+expander arrow:checked {
+    color: @NebulaPrimary;
+}
+
+/* ---------------------------------------------------------------------------
+   Statusbar
+   --------------------------------------------------------------------------- */
+statusbar {
+    padding: 4px 10px;
+    color: alpha(@theme_fg_color, 0.6);
+    border-top: 1px solid @NebulaBorder;
+}
+
+/* ---------------------------------------------------------------------------
+   ComboBox / Dropdown
+   --------------------------------------------------------------------------- */
+combobox button.combo {
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+combobox arrow {
+    color: alpha(@theme_fg_color, 0.5);
+}
+
+combobox button:hover {
+    border-color: @NebulaPrimary;
+}
+
+/* ComboBox in cells */
+cellview combobox button {
+    padding: 2px 6px;
+}
+
+/* ---------------------------------------------------------------------------
+   AppNotification / Banner
+   --------------------------------------------------------------------------- */
+appnotification {
+    background-color: rgba(26, 17, 40, 0.95);
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+appnotification label {
+    color: @theme_fg_color;
+}
+
+appnotification button {
+    border-radius: 6px;
+    padding: 4px 10px;
+}
+
+/* ---------------------------------------------------------------------------
+   Calendar
+   --------------------------------------------------------------------------- */
+calendar {
+    background-color: rgba(26, 17, 40, 0.95);
+    border: 1px solid @NebulaBorder;
+    border-radius: 10px;
+    padding: 8px;
+    color: @theme_fg_color;
+}
+
+calendar:selected {
+    background-color: @NebulaPrimary;
+    color: #ffffff;
+    border-radius: 50%;
+}
+
+calendar.header {
+    background-color: alpha(@NebulaPrimary, 0.12);
+    color: @theme_fg_color;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+}
+
+calendar.button {
+    color: @NebulaSecondary;
+}
+
+calendar.button:hover {
+    color: @theme_fg_color;
+}
+
+calendar:indeterminate {
+    color: alpha(@theme_fg_color, 0.35);
+}
+
+/* ---------------------------------------------------------------------------
+   Color Selection
+   --------------------------------------------------------------------------- */
+colorswatch {
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    border: 2px solid transparent;
+}
+
+colorswatch:hover {
+    border-color: alpha(@theme_fg_color, 0.3);
+}
+
+colorswatch:checked {
+    border-color: @theme_fg_color;
+}
+
+colorchooser {
+    padding: 8px;
+}
+
+/* ---------------------------------------------------------------------------
+   Expander / Arrow
+   --------------------------------------------------------------------------- */
+arrow {
+    color: alpha(@theme_fg_color, 0.5);
+}
+
+arrow:hover {
+    color: @theme_fg_color;
+}
+
+/* ---------------------------------------------------------------------------
+   Spinner
+   --------------------------------------------------------------------------- */
+spinner {
+    color: @NebulaPrimary;
+    opacity: 0;
+}
+
+spinner:checked,
+spinner:not(:backdrop) {
+    opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   OSD / On-Screen Display
+   --------------------------------------------------------------------------- */
+.osd {
+    background-color: rgba(26, 17, 40, 0.95);
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+    padding: 8px;
+    color: @theme_fg_color;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+osd progressbar trough {
+    background-color: alpha(@theme_fg_color, 0.15);
+    border-color: transparent;
+    border-radius: 99px;
+    min-height: 4px;
+}
+
+osd progressbar progress {
+    background-color: @NebulaPrimary;
+    border-radius: 99px;
+    min-height: 4px;
+}
+
+osd scale trough {
+    background-color: alpha(@theme_fg_color, 0.15);
+    border-color: transparent;
+    border-radius: 99px;
+    min-height: 4px;
+}
+
+osd scale slider {
+    background-color: @theme_fg_color;
+    border-color: transparent;
+    min-width: 14px;
+    min-height: 14px;
+    margin: -5px;
+}
+
+/* ---------------------------------------------------------------------------
+   Links
+   --------------------------------------------------------------------------- */
+*:link,
+button.flat:link {
+    color: @NebulaSecondary;
+}
+
+*:link:hover {
+    color: @NebulaPrimary;
+}
+
+*:link:active {
+    color: alpha(@NebulaPrimary, 0.8);
+}
+
+/* ---------------------------------------------------------------------------
+   Focus Ring
+   --------------------------------------------------------------------------- */
+*:focus {
+    outline-color: alpha(@NebulaPrimary, 0.5);
+}
+
+*:focus-visible {
+    outline-style: solid;
+    outline-color: @NebulaPrimary;
+    outline-width: 2px;
+    outline-offset: 2px;
+    -gtk-outline-radius: 6px;
+}
+
+/* ---------------------------------------------------------------------------
+   Selection
+   --------------------------------------------------------------------------- */
+::selection {
+    background-color: alpha(@NebulaPrimary, 0.4);
+    color: @theme_fg_color;
+}
+
+/* ---------------------------------------------------------------------------
+   Rubberband
+   --------------------------------------------------------------------------- */
+rubberband,
+.rubberband {
+    border: 2px solid @NebulaPrimary;
+    background-color: alpha(@NebulaPrimary, 0.15);
+}
+
+/* ---------------------------------------------------------------------------
+   Drop Target / Drag & Drop
+   --------------------------------------------------------------------------- */
+drop-target {
+    border-radius: 8px;
+    transition: all 200ms ease-out;
+}
+
+drop-target.drop-active {
+    border: 2px dashed @NebulaPrimary;
+    background-color: alpha(@NebulaPrimary, 0.1);
+}
+
+/* ---------------------------------------------------------------------------
+   Text View
+   --------------------------------------------------------------------------- */
+textview,
+textview text {
+    background-color: @NebulaView;
+    color: theme_fg_color;
+}
+
+textview border {
+    background-color: transparent;
+    color: alpha(@theme_fg_color, 0.25);
+}
+
+textview text:backdrop {
+    background-color: alpha(@NebulaView, 0.7);
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar / Pane Divider
+   --------------------------------------------------------------------------- */
+.sidebar separator,
+paned separator {
+    background-color: @NebulaBorder;
+    min-width: 1px;
+    min-height: 1px;
+}
+
+/* ---------------------------------------------------------------------------
+   Assistant (Wizard)
+   --------------------------------------------------------------------------- */
+assistant .sidebar {
+    background-color: @NebulaSidebar;
+    border-right: 1px solid @NebulaBorder;
+}
+
+assistant .sidebar label {
+    padding: 8px 12px;
+    color: alpha(@theme_fg_color, 0.65);
+}
+
+assistant .sidebar label.highlight {
+    color: @theme_fg_color;
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------------
+   Print Dialog
+   --------------------------------------------------------------------------- */
+printdialog paper {
+    background-color: #ffffff;
+    border: 1px solid alpha(@theme_fg_color, 0.2);
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+   Emoji Picker (GTK 3.24.34+)
+   --------------------------------------------------------------------------- */
+EmojiPicker {
+    background-color: rgba(26, 17, 40, 0.95);
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+}
+
+EmojiPicker entry {
+    border-radius: 20px;
+}
+
+/* ---------------------------------------------------------------------------
+   Hdy (libhandy) Widgets
+   --------------------------------------------------------------------------- */
+/* Handy Leaflet / Clamp */
+.hdy-leaflet {
+    background-color: @theme_bg_color;
+}
+
+.hdy-header-group {
+    background-color: rgba(19, 14, 34, 0.4);
+}
+
+/* Handy Action Row */
+.hdy-action-row {
+    padding: 8px 12px;
+    min-height: 50px;
+}
+
+.hdy-action-row:hover {
+    background-color: alpha(@NebulaPrimary, 0.08);
+}
+
+.hdy-action-row:active {
+    background-color: alpha(@NebulaPrimary, 0.15);
+}
+
+.hdy-action-row .title {
+    font-weight: 500;
+}
+
+.hdy-action-row .subtitle {
+    color: alpha(@theme_fg_color, 0.55);
+}
+
+/* Handy Expander Row */
+.hdy-expander-row {
+    padding: 8px 12px;
+}
+
+.hdy-expander-row:hover {
+    background-color: alpha(@NebulaPrimary, 0.08);
+}
+
+/* Handy Combo Row */
+.hdy-combo-row {
+    padding: 8px 12px;
+}
+
+/* Handy Preferences Group */
+.hdy-preferences-group {
+    padding: 12px;
+}
+
+.hdy-preferences-group > header {
+    padding: 8px 12px;
+}
+
+/* Handy Preferences Page */
+.hdy-preferences-page {
+    background-color: @theme_bg_color;
+}
+
+/* Handy Search Bar */
+.hdy-search-bar {
+    background-color: rgba(19, 14, 34, 0.95);
+    border-bottom: 1px solid @NebulaBorder;
+}
+
+/* ---------------------------------------------------------------------------
+   GTK 3.20+ Class-based selectors (compatibility)
+   --------------------------------------------------------------------------- */
+headerbar > box > label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+headerbar > box > button {
+    min-height: 28px;
+}
+
+/* Window controls spacing */
+headerbar > windowcontrols {
+    padding: 0 4px;
+}
+
+headerbar > windowcontrols > button {
+    min-width: 14px;
+    min-height: 14px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+headerbar > windowcontrols > button.close {
+    background-color: #ff5f57;
+    color: #8a0000;
+    border: none;
+}
+
+headerbar > windowcontrols > button.close:hover {
+    background-color: #ff4040;
+    color: #6a0000;
+}
+
+headerbar > windowcontrols > button.maximize {
+    background-color: #febc2e;
+    color: #8a6600;
+    border: none;
+}
+
+headerbar > windowcontrols > button.maximize:hover {
+    background-color: #ffa500;
+    color: #6a4400;
+}
+
+headerbar > windowcontrols > button.minimize {
+    background-color: #28c840;
+    color: #006a00;
+    border: none;
+}
+
+headerbar > windowcontrols > button.minimize:hover {
+    background-color: #20b030;
+    color: #005000;
+}
+
+/* ---------------------------------------------------------------------------
+   Media / Video Player
+   --------------------------------------------------------------------------- */
+videooverlaycontrols {
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    padding: 12px;
+}
+
+videooverlaycontrols button {
+    background-color: alpha(#ffffff, 0.15);
+    border-color: transparent;
+    border-radius: 50%;
+    min-width: 36px;
+    min-height: 36px;
+    color: #ffffff;
+}
+
+videooverlaycontrols button:hover {
+    background-color: alpha(#ffffff, 0.25);
+}
+
+/* ---------------------------------------------------------------------------
+   Lock Screen / Auth Prompt
+   --------------------------------------------------------------------------- */
+lockscreen {
+    background-color: @theme_bg_color;
+}
+
+/* ---------------------------------------------------------------------------
+   Printing
+   --------------------------------------------------------------------------- */
+printdialog {
+    background-color: @theme_bg_color;
+}
+
+/* ---------------------------------------------------------------------------
+   SourceView / Code Editor
+   --------------------------------------------------------------------------- */
+textview text,
+textview text:hover {
+    font-family: monospace;
+}
+
+/* ---------------------------------------------------------------------------
+   Misc / Utility Classes
+   --------------------------------------------------------------------------- */
+.nebula-accent {
+    color: @NebulaPrimary;
+}
+
+.nebula-surface {
+    background-color: rgba(124, 58, 237, 0.08);
+}
+
+.nebula-glass {
+    background-color: rgba(124, 58, 237, 0.06);
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+}
+
+.nebula-card {
+    background-color: rgba(26, 17, 40, 0.6);
+    border: 1px solid @NebulaBorder;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+/* ---------------------------------------------------------------------------
+   Backdrop State (unfocused window)
+   --------------------------------------------------------------------------- */
+headerbar:backdrop {
+    background: linear-gradient(180deg,
+                rgba(15, 10, 26, 0.95) 0%,
+                rgba(12, 8, 22, 0.92) 100%);
+}
+
+headerbar:backdrop button {
+    background-image: linear-gradient(180deg,
+                    rgba(124, 58, 237, 0.06) 0%,
+                    rgba(124, 58, 237, 0.03) 100%);
+    border-color: alpha(@NebulaBorder, 0.6);
+    color: alpha(@theme_fg_color, 0.6);
+}
+
+/* ---------------------------------------------------------------------------
+   Print Layout
+   --------------------------------------------------------------------------- */
+printdialog paper {
+    background-color: #ffffff;
+}
+
+/* ---------------------------------------------------------------------------
+   High Contrast overrides (optional)
+   --------------------------------------------------------------------------- */
+@media (prefers-contrast: high) {
+    button {
+        border-width: 2px;
+    }
+
+    entry,
+    spinbutton {
+        border-width: 2px;
+    }
+
+    scale slider {
+        border-width: 3px;
+    }
+
+    check,
+    radio {
+        border-width: 3px;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced Motion
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: 0ms !important;
+    }
+}

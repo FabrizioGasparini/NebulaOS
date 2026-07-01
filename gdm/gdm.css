@@ -1,0 +1,86 @@
+/* NebulaOS GDM Login Screen Theme */
+/* Based on GNOME Shell theme colors */
+
+stage {
+    background-color: #0f0a1a;
+    background-image: url("file:///usr/share/backgrounds/nebula-default.png");
+    background-size: cover;
+    background-position: center;
+}
+
+/* Login dialog */
+login-dialog {
+    border-radius: 16px;
+    background-color: rgba(15, 10, 26, 0.85);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    padding: 40px;
+}
+
+.login-dialog .logo {
+    icon-size: 96px;
+    padding-bottom: 20px;
+}
+
+.login-dialog .username-label {
+    color: #e2d9f3;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.login-dialog .password-entry {
+    background-color: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 8px;
+    color: #e2d9f3;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.login-dialog .password-entry:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+}
+
+.login-dialog .login-button {
+    background-color: #7c3aed;
+    color: white;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.login-dialog .login-button:hover {
+    background-color: #8b5cf6;
+}
+
+/* User list */
+user-list {
+    background-color: transparent;
+}
+
+.user-list .user-button {
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.user-list .user-button:hover {
+    background-color: rgba(124, 58, 237, 0.15);
+}
+
+.user-list .user-button:checked {
+    background-color: rgba(124, 58, 237, 0.25);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+/* Power button */
+login-dialog .power-button {
+    color: #c4b5fd;
+    padding: 8px;
+}
+
+.login-dialog .power-button:hover {
+    color: #7c3aed;
+    background-color: rgba(124, 58, 237, 0.15);
+    border-radius: 8px;
+}

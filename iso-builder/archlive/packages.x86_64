@@ -11,8 +11,6 @@ mkinitcpio
 plymouth
 mkinitcpio-archiso
 syslinux
-intel-ucode
-amd-ucode
 
 # Networking
 networkmanager

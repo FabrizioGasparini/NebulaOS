@@ -16,7 +16,7 @@ sudo rm -rf "${WORK_DIR}"
 mkdir -p "${OUTPUT_DIR}"
 
 echo "[2/3] Building ISO..."
-sudo mkarchiso -v -r -w "${WORK_DIR}" -o "${OUTPUT_DIR}" "${PROFILE_DIR}"
+sudo mkarchiso -v -w "${WORK_DIR}" -o "${OUTPUT_DIR}" "${PROFILE_DIR}"
 
 echo "[3/3] Build complete!"
 echo ""

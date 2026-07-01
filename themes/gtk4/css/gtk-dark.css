@@ -1,0 +1,224 @@
+/* NebulaOS Violet Glass Dark Theme */
+/* Apple-like liquid glass aesthetic - Dark Variant */
+
+/* === Color Variables === */
+@define-color glass_tint rgba(139, 92, 246, 0.12);
+@define-color glass_border rgba(139, 92, 246, 0.25);
+@define-color glass_highlight rgba(255, 255, 255, 0.08);
+@define-color accent #8b5cf6;
+@define-color accent_hover #a78bfa;
+@define-color accent_glow rgba(139, 92, 246, 0.4);
+@define-color text_primary rgba(255, 255, 255, 0.95);
+@define-color text_secondary rgba(221, 214, 254, 0.75);
+@define-color text_muted rgba(255, 255, 255, 0.45);
+@define-color bg_dark rgba(8, 2, 18, 0.9);
+@define-color bg_darker rgba(5, 1, 12, 0.95);
+@define-color success #22c55e;
+@define-color warning #f59e0b;
+@define-color error #ef4444;
+
+/* === Base Window === */
+window.background {
+    background-color: @bg_dark;
+    color: @text_primary;
+}
+
+window.csd {
+    border-radius: 12px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+    border: 1px solid @glass_border;
+}
+
+/* === Header Bar === */
+headerbar {
+    background-color: rgba(12, 4, 28, 0.7);
+    border-bottom: 1px solid @glass_border;
+    border-radius: 12px 12px 0 0;
+    padding: 4px 8px;
+    min-height: 40px;
+}
+
+headerbar title {
+    font-weight: 600;
+    color: @text_primary;
+}
+
+/* === Buttons === */
+button {
+    background-color: @glass_tint;
+    border: 1px solid @glass_border;
+    border-radius: 10px;
+    color: @text_primary;
+    padding: 6px 14px;
+    transition-property: background-color, box-shadow, border-color;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+}
+
+button:hover {
+    background-color: rgba(139, 92, 246, 0.3);
+    border-color: rgba(167, 139, 250, 0.5);
+    box-shadow: 0 0 16px @accent_glow;
+}
+
+button:active {
+    background-color: rgba(139, 92, 246, 0.4);
+}
+
+button.suggested-action {
+    background-color: rgba(139, 92, 246, 0.6);
+    border-color: rgba(139, 92, 246, 0.7);
+}
+
+button.suggested-action:hover {
+    background-color: rgba(139, 92, 246, 0.75);
+    box-shadow: 0 0 24px @accent_glow;
+}
+
+/* === Text Entry === */
+entry {
+    background-color: rgba(5, 1, 12, 0.6);
+    border: 1px solid @glass_border;
+    border-radius: 8px;
+    color: @text_primary;
+    padding: 8px 12px;
+    caret-color: @accent;
+    transition-property: border-color, box-shadow;
+    transition-duration: 200ms;
+}
+
+entry:focus {
+    border-color: @accent;
+    box-shadow: 0 0 0 3px @accent_glow;
+}
+
+/* === Lists === */
+list row {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition-property: background-color;
+    transition-duration: 150ms;
+    padding: 6px 8px;
+}
+
+list row:hover {
+    background-color: rgba(139, 92, 246, 0.12);
+}
+
+list row:selected {
+    background-color: rgba(139, 92, 246, 0.25);
+}
+
+/* === Scrollbar === */
+scrollbar slider {
+    background-color: rgba(139, 92, 246, 0.35);
+    border-radius: 999px;
+    min-width: 6px;
+    min-height: 6px;
+}
+
+scrollbar slider:hover {
+    background-color: rgba(139, 92, 246, 0.55);
+}
+
+/* === Popover === */
+popover.background {
+    background-color: rgba(12, 4, 28, 0.92);
+    border: 1px solid @glass_border;
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+/* === Switch === */
+switch {
+    background-color: rgba(5, 1, 12, 0.6);
+    border: 1px solid @glass_border;
+    border-radius: 999px;
+}
+
+switch:checked {
+    background-color: rgba(139, 92, 246, 0.6);
+    border-color: @accent;
+}
+
+/* === Scale === */
+scale trough {
+    background-color: rgba(5, 1, 12, 0.6);
+}
+
+scale highlight {
+    background-color: @accent;
+}
+
+scale slider {
+    background-color: @text_primary;
+    border: 2px solid @accent;
+}
+
+scale slider:hover {
+    box-shadow: 0 0 12px @accent_glow;
+}
+
+/* === Sidebar === */
+.sidebar {
+    background-color: rgba(6, 2, 15, 0.7);
+    border-right: 1px solid @glass_border;
+}
+
+/* === Card === */
+.card {
+    background-color: rgba(139, 92, 246, 0.06);
+    border: 1px solid @glass_border;
+    border-radius: 12px;
+}
+
+/* === Tooltip === */
+tooltip {
+    background-color: rgba(12, 4, 28, 0.95);
+    border: 1px solid @glass_border;
+    border-radius: 8px;
+}
+
+/* === Notebook === */
+notebook > header {
+    background-color: rgba(5, 1, 12, 0.5);
+    border: 1px solid @glass_border;
+}
+
+notebook > header tab:checked {
+    background-color: rgba(139, 92, 246, 0.35);
+}
+
+/* === Calendar === */
+calendar {
+    background-color: rgba(5, 1, 12, 0.6);
+    border: 1px solid @glass_border;
+}
+
+/* === Text View === */
+textview {
+    background-color: rgba(5, 1, 12, 0.5);
+}
+
+/* === Menu === */
+menu {
+    background-color: rgba(12, 4, 28, 0.95);
+    border: 1px solid @glass_border;
+}
+
+menuitem:hover {
+    background-color: rgba(139, 92, 246, 0.25);
+}
+
+/* === Window Controls === */
+windowcontrols button.close {
+    background-color: rgba(239, 68, 68, 0.9);
+}
+
+windowcontrols button.maximize {
+    background-color: rgba(34, 197, 94, 0.9);
+}
+
+windowcontrols button.minimize {
+    background-color: rgba(245, 158, 11, 0.9);
+}

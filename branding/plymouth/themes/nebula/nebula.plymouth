@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=NebulaOS
+Description=NebulaOS Liquid Glass Boot Splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/nebula
+ScriptFile=/usr/share/plymouth/themes/nebula/nebula.script

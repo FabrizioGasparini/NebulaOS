@@ -1,0 +1,9 @@
+NAME="NebulaOS"
+PRETTY_NAME="NebulaOS"
+ID=nebulaos
+BUILD_ID=rolling
+ANSI_COLOR="38;2;139;92;246"
+HOME_URL="https://nebulaos.org"
+DOCUMENTATION_URL="https://docs.nebulaos.org"
+SUPPORT_URL="https://support.nebulaos.org"
+BUG_REPORT_URL="https://bugs.nebulaos.org"

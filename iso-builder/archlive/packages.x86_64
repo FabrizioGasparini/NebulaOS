@@ -11,6 +11,8 @@ mkinitcpio
 plymouth
 mkinitcpio-archiso
 syslinux
+intel-ucode
+amd-ucode
 
 # Networking
 networkmanager
@@ -32,6 +34,10 @@ gtk4
 greetd
 greetd-gtkgreet
 cage
+
+# Sway WM
+sway
+swaybg
 
 # Wayland tools
 foot

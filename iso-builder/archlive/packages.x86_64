@@ -8,7 +8,6 @@ base-devel
 
 # Boot & initramfs
 mkinitcpio
-plymouth
 mkinitcpio-archiso
 syslinux
 

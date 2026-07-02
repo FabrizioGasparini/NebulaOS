@@ -12,32 +12,64 @@ wlroots = dependency('wlroots-0.18', version: '>=0.18.0')
 glesv2 = dependency('glesv2')
 egl = dependency('egl')
 
+wayland_scanner = find_program('wayland-scanner')
+gen_script = find_program('scripts/gen-protocols.sh')
+
 inc = include_directories('include')
 
+protocols_dir = wayland_protos.get_variable('pkgdatadir')
+
+# Generate XDG Shell protocol
+xdg_shell_xml = protocols_dir / 'stable/xdg-shell/xdg-shell.xml'
+xdg_shell_gen = custom_target('xdg-shell-protocols',
+  input: xdg_shell_xml,
+  output: ['xdg-shell-protocol.c', 'xdg-shell-protocol.h'],
+  command: [gen_script, wayland_scanner, '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
+)
+
+# Generate Layer Shell protocol
+layer_shell_xml = meson.project_source_root() / 'protocol' / 'wlr-layer-shell-unstable-v1.xml'
+layer_shell_gen = custom_target('wlr-layer-shell-protocols',
+  input: layer_shell_xml,
+  output: ['wlr-layer-shell-protocol.c', 'wlr-layer-shell-protocol.h'],
+  command: [gen_script, wayland_scanner, '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
+)
+
+# Generate XDG Decoration protocol
+deco_xml = protocols_dir / 'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml'
+deco_gen = custom_target('xdg-decoration-protocols',
+  input: deco_xml,
+  output: ['xdg-decoration-protocol.c', 'xdg-decoration-protocol.h'],
+  command: [gen_script, wayland_scanner, '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
+)
+
 sources = files(
-    'src/main.c',
-    'src/server.c',
-    'src/output.c',
-    'src/view.c',
-    'src/cursor.c',
-    'src/xdg_shell.c',
-    'src/layer_shell.c',
-    'src/decorations.c',
-    'src/glass.c',
-    'src/animation.c',
-    'src/config.c',
+  'src/main.c',
+  'src/server.c',
+  'src/output.c',
+  'src/view.c',
+  'src/cursor.c',
+  'src/xdg_shell.c',
+  'src/layer_shell.c',
+  'src/decorations.c',
+  'src/glass.c',
+  'src/animation.c',
+  'src/config.c',
 )
 
 executable('nebula-compositor',
-    sources,
-    include_directories: inc,
-    dependencies: [
-        wayland_server,
-        wayland_protos,
-        xkbcommon,
-        wlroots,
-        glesv2,
-        egl,
-    ],
-    install: true,
+  sources,
+  xdg_shell_gen,
+  layer_shell_gen,
+  deco_gen,
+  include_directories: inc,
+  dependencies: [
+    wayland_server,
+    wayland_protos,
+    xkbcommon,
+    wlroots,
+    glesv2,
+    egl,
+  ],
+  install: true,
 )

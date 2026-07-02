@@ -79,12 +79,15 @@ sources = files(
     'src/config.c',
 )
 
+# Build dir for generated protocol headers
+build_inc = include_directories(meson.project_build_root())
+
 executable('nebula-compositor',
     sources,
     xdg_shell_protocol_c, xdg_shell_protocol_h,
     layer_shell_protocol_c, layer_shell_protocol_h,
     deco_protocol_c, deco_protocol_h,
-    include_directories: inc,
+    include_directories: [inc, build_inc],
     dependencies: [
         wayland_server,
         wayland_protos,

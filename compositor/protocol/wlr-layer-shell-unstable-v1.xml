@@ -27,7 +27,7 @@
       position on the screen.
     </description>
 
-    <event name="destroy" since="1">
+    <event name="destroy" type="destructor" since="1">
       <description summary="the compositor has finished with the layer_shell">
         This event indicates that the compositor is done sending manager
         events. The compositor will destroy the object immediately
@@ -66,7 +66,7 @@
       placement.
     </description>
 
-    <event name="destroy" since="1">
+    <event name="destroy" type="destructor" since="1">
       <description summary="the surface has been closed by the compositor">
         The compositor has decided that this surface should no longer be
         visible. This can happen, for example, when the output the surface

@@ -12,36 +12,65 @@ wlroots = dependency('wlroots-0.18', version: ['>=0.18.0', '<0.19.0'])
 glesv2 = dependency('glesv2')
 egl = dependency('egl')
 
-wayland = find_program('wayland-scanner')
+wayland_scanner = find_program('wayland-scanner')
 
-xdg_shell_xml = join_paths(wayland_protos.get_variable('pkgdatadir'),
-    'stable/xdg-shell/xdg-shell.xml')
-xdg_shell_protocols = custom_target('xdg-shell-protocols',
+#
+# XDG-SHELL
+#
+xdg_shell_xml = join_paths(
+    wayland_protos.get_variable('pkgdatadir'),
+    'stable/xdg-shell/xdg-shell.xml'
+)
+
+xdg_shell_protocols = wayland_scanner.generate(
+    'xdg-shell-protocol',
     input: xdg_shell_xml,
     output: ['xdg-shell-protocol.c', 'xdg-shell-protocol.h'],
-    command: [wayland, 'private-code',
-              '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
+    args: [
+        'private-code', '@INPUT@', '@OUTPUT0@',
+        'client-header', '@INPUT@', '@OUTPUT1@'
+    ]
 )
 
+#
+# WLR-LAYER-SHELL
+#
 layer_shell_xml = join_paths(
     meson.project_source_root(), 'protocol',
-    'wlr-layer-shell-unstable-v1.xml')
-layer_shell_protocols = custom_target('wlr-layer-shell-protocols',
+    'wlr-layer-shell-unstable-v1.xml'
+)
+
+layer_shell_protocols = wayland_scanner.generate(
+    'wlr-layer-shell-protocol',
     input: layer_shell_xml,
     output: ['wlr-layer-shell-protocol.c', 'wlr-layer-shell-protocol.h'],
-    command: [wayland, 'private-code',
-              '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
+    args: [
+        'private-code', '@INPUT@', '@OUTPUT0@',
+        'client-header', '@INPUT@', '@OUTPUT1@'
+    ]
 )
 
-deco_xml = join_paths(wayland_protos.get_variable('pkgdatadir'),
-    'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml')
-deco_protocols = custom_target('xdg-decoration-protocols',
+#
+# XDG-DECORATION
+#
+deco_xml = join_paths(
+    wayland_protos.get_variable('pkgdatadir'),
+    'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml'
+)
+
+deco_protocols = wayland_scanner.generate(
+    'xdg-decoration-protocol',
     input: deco_xml,
     output: ['xdg-decoration-protocol.c', 'xdg-decoration-protocol.h'],
-    command: [wayland, 'private-code',
-              '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
+    args: [
+        'private-code', '@INPUT@', '@OUTPUT0@',
+        'client-header', '@INPUT@', '@OUTPUT1@'
+    ]
 )
 
+#
+# SOURCES
+#
 sources = files(
     'src/main.c',
     'src/server.c',

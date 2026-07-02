@@ -22,14 +22,16 @@ xdg_shell_xml = join_paths(
     'stable/xdg-shell/xdg-shell.xml'
 )
 
-xdg_shell_protocols = wayland_scanner.generate(
-    'xdg-shell-protocol',
+xdg_shell_c = custom_target('xdg-shell-c',
     input: xdg_shell_xml,
-    output: ['xdg-shell-protocol.c', 'xdg-shell-protocol.h'],
-    args: [
-        'private-code', '@INPUT@', '@OUTPUT0@',
-        'client-header', '@INPUT@', '@OUTPUT1@'
-    ]
+    output: 'xdg-shell-protocol.c',
+    command: [wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@']
+)
+
+xdg_shell_h = custom_target('xdg-shell-h',
+    input: xdg_shell_xml,
+    output: 'xdg-shell-protocol.h',
+    command: [wayland_scanner, 'client-header', '@INPUT@', '@OUTPUT@']
 )
 
 #
@@ -40,14 +42,16 @@ layer_shell_xml = join_paths(
     'wlr-layer-shell-unstable-v1.xml'
 )
 
-layer_shell_protocols = wayland_scanner.generate(
-    'wlr-layer-shell-protocol',
+layer_shell_c = custom_target('layer-shell-c',
     input: layer_shell_xml,
-    output: ['wlr-layer-shell-protocol.c', 'wlr-layer-shell-protocol.h'],
-    args: [
-        'private-code', '@INPUT@', '@OUTPUT0@',
-        'client-header', '@INPUT@', '@OUTPUT1@'
-    ]
+    output: 'wlr-layer-shell-protocol.c',
+    command: [wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@']
+)
+
+layer_shell_h = custom_target('layer-shell-h',
+    input: layer_shell_xml,
+    output: 'wlr-layer-shell-protocol.h',
+    command: [wayland_scanner, 'client-header', '@INPUT@', '@OUTPUT@']
 )
 
 #
@@ -58,14 +62,16 @@ deco_xml = join_paths(
     'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml'
 )
 
-deco_protocols = wayland_scanner.generate(
-    'xdg-decoration-protocol',
+deco_c = custom_target('xdg-decoration-c',
     input: deco_xml,
-    output: ['xdg-decoration-protocol.c', 'xdg-decoration-protocol.h'],
-    args: [
-        'private-code', '@INPUT@', '@OUTPUT0@',
-        'client-header', '@INPUT@', '@OUTPUT1@'
-    ]
+    output: 'xdg-decoration-protocol.c',
+    command: [wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@']
+)
+
+deco_h = custom_target('xdg-decoration-h',
+    input: deco_xml,
+    output: 'xdg-decoration-protocol.h',
+    command: [wayland_scanner, 'client-header', '@INPUT@', '@OUTPUT@']
 )
 
 #
@@ -87,9 +93,9 @@ sources = files(
 
 executable('nebula-compositor',
     sources,
-    xdg_shell_protocols,
-    layer_shell_protocols,
-    deco_protocols,
+    xdg_shell_c, xdg_shell_h,
+    layer_shell_c, layer_shell_h,
+    deco_c, deco_h,
     dependencies: [
         wayland_server,
         wayland_protos,

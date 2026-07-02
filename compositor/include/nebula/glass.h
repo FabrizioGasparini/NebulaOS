@@ -1,7 +1,7 @@
 #ifndef NEBULA_GLASS_H
 #define NEBULA_GLASS_H
 
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 #include <stdbool.h>
 
 struct nebula_server;

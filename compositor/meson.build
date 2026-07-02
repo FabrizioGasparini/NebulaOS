@@ -8,75 +8,42 @@ add_project_arguments('-DWLR_USE_UNSTABLE', language: 'c')
 wayland_server = dependency('wayland-server')
 wayland_protos = dependency('wayland-protocols')
 xkbcommon = dependency('xkbcommon')
-wlroots = dependency('wlroots-0.18', version: ['>=0.18.0', '<0.19.0'])
+wlroots = dependency('wlroots', version: '>=0.17.0')
 glesv2 = dependency('glesv2')
 egl = dependency('egl')
 
-wayland_scanner = find_program('wayland-scanner')
+wayland = find_program('wayland-scanner')
 
-#
-# XDG-SHELL
-#
-xdg_shell_xml = join_paths(
-    wayland_protos.get_variable('pkgdatadir'),
-    'stable/xdg-shell/xdg-shell.xml'
-)
+inc = include_directories('include')
 
-xdg_shell_c = custom_target('xdg-shell-c',
+xdg_shell_xml = join_paths(wayland_protos.get_variable('pkgdatadir'),
+    'stable/xdg-shell/xdg-shell.xml')
+xdg_shell_protocols = custom_target('xdg-shell-protocols',
     input: xdg_shell_xml,
-    output: 'xdg-shell-protocol.c',
-    command: [wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@']
+    output: ['xdg-shell-protocol.c', 'xdg-shell-protocol.h'],
+    command: [wayland, 'private-code',
+              '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
 )
 
-xdg_shell_h = custom_target('xdg-shell-h',
-    input: xdg_shell_xml,
-    output: 'xdg-shell-protocol.h',
-    command: [wayland_scanner, 'client-header', '@INPUT@', '@OUTPUT@']
-)
-
-#
-# WLR-LAYER-SHELL
-#
 layer_shell_xml = join_paths(
     meson.project_source_root(), 'protocol',
-    'wlr-layer-shell-unstable-v1.xml'
-)
-
-layer_shell_c = custom_target('layer-shell-c',
+    'wlr-layer-shell-unstable-v1.xml')
+layer_shell_protocols = custom_target('wlr-layer-shell-protocols',
     input: layer_shell_xml,
-    output: 'wlr-layer-shell-protocol.c',
-    command: [wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@']
+    output: ['wlr-layer-shell-protocol.c', 'wlr-layer-shell-protocol.h'],
+    command: [wayland, 'private-code',
+              '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
 )
 
-layer_shell_h = custom_target('layer-shell-h',
-    input: layer_shell_xml,
-    output: 'wlr-layer-shell-protocol.h',
-    command: [wayland_scanner, 'client-header', '@INPUT@', '@OUTPUT@']
-)
-
-#
-# XDG-DECORATION
-#
-deco_xml = join_paths(
-    wayland_protos.get_variable('pkgdatadir'),
-    'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml'
-)
-
-deco_c = custom_target('xdg-decoration-c',
+deco_xml = join_paths(wayland_protos.get_variable('pkgdatadir'),
+    'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml')
+deco_protocols = custom_target('xdg-decoration-protocols',
     input: deco_xml,
-    output: 'xdg-decoration-protocol.c',
-    command: [wayland_scanner, 'private-code', '@INPUT@', '@OUTPUT@']
+    output: ['xdg-decoration-protocol.c', 'xdg-decoration-protocol.h'],
+    command: [wayland, 'private-code',
+              '@INPUT@', '@OUTPUT0@', '@OUTPUT1@'],
 )
 
-deco_h = custom_target('xdg-decoration-h',
-    input: deco_xml,
-    output: 'xdg-decoration-protocol.h',
-    command: [wayland_scanner, 'client-header', '@INPUT@', '@OUTPUT@']
-)
-
-#
-# SOURCES
-#
 sources = files(
     'src/main.c',
     'src/server.c',
@@ -93,9 +60,10 @@ sources = files(
 
 executable('nebula-compositor',
     sources,
-    xdg_shell_c, xdg_shell_h,
-    layer_shell_c, layer_shell_h,
-    deco_c, deco_h,
+    xdg_shell_protocols,
+    layer_shell_protocols,
+    deco_protocols,
+    include_directories: inc,
     dependencies: [
         wayland_server,
         wayland_protos,

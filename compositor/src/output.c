@@ -23,7 +23,6 @@ static void output_handle_frame(struct wl_listener *listener, void *data) {
     struct nebula_output *output = wl_container_of(listener, output, listeners.frame);
     (void)data;
 
-    /* Scene graph handles rendering automatically */
     wlr_scene_output_commit(output->scene_output);
 }
 
@@ -38,8 +37,14 @@ static void output_handle_destroy(struct wl_listener *listener, void *data) {
 }
 
 void output_init(struct nebula_server *server) {
-    struct wlr_output *wlr_output = server->backend->outputs ?
-        wl_container_of(server->backend->outputs.next, wlr_output, link) : NULL;
+    struct wlr_output *wlr_output = NULL;
+
+    /* Get first available output */
+    struct wlr_backend *backend = server->backend;
+    struct wl_list *output_list = &backend->outputs;
+    if (!wl_list_empty(output_list)) {
+        wlr_output = wl_container_of(output_list->next, wlr_output, link);
+    }
 
     if (!wlr_output) {
         wlr_log(WLR_INFO, "No outputs available yet");

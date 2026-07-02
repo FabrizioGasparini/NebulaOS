@@ -3,7 +3,6 @@
 
 #include <wayland-server-core.h>
 #include <wlr/backend.h>
-#include <wlr/render/renderer.h>
 #include <wlr/types/wlr_compositor.h>
 #include <wlr/types/wlr_data_device.h>
 #include <wlr/types/wlr_input_device.h>

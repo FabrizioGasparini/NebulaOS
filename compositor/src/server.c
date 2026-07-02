@@ -4,7 +4,6 @@
 #include <string.h>
 #include <wayland-server-core.h>
 #include <wlr/backend.h>
-#include <wlr/render/renderer.h>
 #include <wlr/types/wlr_compositor.h>
 #include <wlr/types/wlr_data_device.h>
 #include <wlr/types/wlr_output_layout.h>
@@ -27,7 +26,7 @@ extern void decorations_init(struct nebula_server *server);
 
 static void server_handle_new_output(struct wl_listener *listener, void *data) {
     struct nebula_server *server = wl_container_of(listener, server, listeners.new_output);
-    struct wlr_output *wlr_output = data;
+    (void)data;
     output_init(server);
 }
 
@@ -46,12 +45,11 @@ static void server_handle_new_input(struct wl_listener *listener, void *data) {
         wlr_keyboard_set_repeat_info(device->keyboard, 25, 600);
 
         struct wlr_keyboard *keyboard = device->keyboard;
-        struct wl_list *list = &server->keyboards;
 
         /* Track keyboard for seat */
         wlr_seat_set_keyboard(server->seat, device);
 
-        wl_list_insert(list, &keyboard->link);
+        wl_list_insert(&server->keyboards, &keyboard->link);
     }
 
     wlr_cursor_attach_input_device(server->cursor, device);
@@ -92,6 +90,11 @@ void server_init(struct nebula_server *server) {
     }
 
     server->renderer = wlr_backend_get_renderer(server->backend);
+    if (!server->renderer) {
+        wlr_log(WLR_ERROR, "Failed to get renderer");
+        exit(1);
+    }
+
     wlr_renderer_init_wl_display(server->renderer, server->wl_display);
 
     wlr_compositor_create(server->wl_display, server->renderer);

@@ -4,6 +4,7 @@ project('nebula-compositor', 'c',
 )
 
 add_project_arguments('-DWLR_USE_UNSTABLE', language: 'c')
+add_project_arguments('-I' + meson.project_build_root(), language: 'c')
 
 wayland_server = dependency('wayland-server')
 wayland_protos = dependency('wayland-protocols')

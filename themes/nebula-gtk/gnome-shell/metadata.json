@@ -1,8 +1,0 @@
-{
-  "uuid": "nebula@nebulaos",
-  "name": "Nebula",
-  "description": "NebulaOS GNOME Shell Theme",
-  "version": 1.0,
-  "shell-version": ["45", "46", "47", "48", "49", "50"],
-  "url": "https://nebulaos.dev"
-}

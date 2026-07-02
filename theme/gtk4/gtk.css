@@ -1,0 +1,288 @@
+/* ============================================================
+   NebulaOS - Violet Glass Theme
+   ============================================================ */
+
+/* Color definitions */
+@define-color nebula-50  #f5f3ff;
+@define-color nebula-100 #ede9fe;
+@define-color nebula-200 #ddd6fe;
+@define-color nebula-300 #c4b5fd;
+@define-color nebula-400 #a78bfa;
+@define-color nebula-500 #8b5cf6;
+@define-color nebula-600 #7c3aed;
+@define-color nebula-700 #6d28d9;
+@define-color nebula-800 #5b21b6;
+@define-color nebula-900 #4c1d95;
+@define-color nebula-950 #2e1065;
+
+/* Window */
+window.background {
+    background-color: rgba(15, 10, 30, 0.01);
+    color: @nebula-50;
+}
+
+/* Headerbar */
+headerbar,
+headerbar.titlebar {
+    background: rgba(30, 20, 60, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px 12px 0 0;
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.06) inset,
+        0 4px 16px rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    color: @nebula-50;
+}
+
+headerbar:backdrop {
+    background: rgba(30, 20, 60, 0.35);
+}
+
+headerbar title,
+headerbar .title {
+    color: rgba(255, 255, 255, 0.90);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+headerbar subtitle,
+headerbar .subtitle {
+    color: rgba(255, 255, 255, 0.50);
+    font-size: 11px;
+}
+
+/* Window controls */
+headerbar button.titlebutton {
+    min-height: 20px;
+    min-width: 20px;
+    padding: 4px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.10);
+    border: none;
+}
+
+headerbar button.titlebutton:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* Buttons */
+button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    color: @nebula-50;
+    transition: all 200ms ease-in-out;
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.20);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+}
+
+button:active {
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.20);
+}
+
+/* Accent button */
+button.suggested-action {
+    background: rgba(124, 58, 237, 0.6);
+    border-color: rgba(167, 139, 250, 0.3);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+button.suggested-action:hover {
+    background: rgba(124, 58, 237, 0.7);
+}
+
+/* Destructive button */
+button.destructive-action {
+    background: rgba(220, 50, 47, 0.6);
+    border-color: rgba(255, 100, 100, 0.3);
+    color: #ffffff;
+}
+
+/* Entries */
+entry {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+    color: @nebula-50;
+    caret-color: @nebula-400;
+}
+
+entry:focus {
+    border-color: @nebula-500;
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.15),
+        0 0 0 2px rgba(139, 92, 246, 0.3);
+}
+
+/* Cards */
+.card,
+.frame {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Sidebar */
+.sidebar,
+.sidebar view,
+.navigation-sidebar {
+    background: rgba(255, 255, 255, 0.04);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    color: @nebula-200;
+}
+
+/* Popover */
+popover.background {
+    background: rgba(30, 20, 50, 0.80);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.40);
+}
+
+/* Scrollbar */
+scrollbar slider {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 99px;
+    min-width: 6px;
+    min-height: 6px;
+}
+
+scrollbar slider:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* OSD */
+.osd {
+    background: rgba(30, 20, 60, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.40);
+}
+
+/* Switch */
+switch {
+    background: rgba(255, 255, 255, 0.10);
+    border-radius: 99px;
+    min-width: 48px;
+    min-height: 24px;
+}
+
+switch:checked {
+    background: @nebula-600;
+}
+
+switch slider {
+    background: white;
+    border-radius: 99px;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+/* Scale/Slider */
+scale {
+    min-height: 4px;
+}
+
+scale trough {
+    background: rgba(255, 255, 255, 0.10);
+    border-radius: 99px;
+    min-height: 4px;
+}
+
+scale highlight {
+    background: @nebula-500;
+    border-radius: 99px;
+    min-height: 4px;
+}
+
+scale slider {
+    background: white;
+    border-radius: 99px;
+    min-width: 16px;
+    min-height: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Labels */
+label {
+    color: @nebula-50;
+}
+
+label.dim-label {
+    color: @nebula-300;
+}
+
+/* Lists */
+list row {
+    background: transparent;
+    padding: 8px;
+}
+
+list row:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+list row:selected {
+    background: rgba(139, 92, 246, 0.2);
+}
+
+/* Tooltips */
+tooltip {
+    background: rgba(30, 20, 50, 0.90);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.30);
+}
+
+tooltip label {
+    color: @nebula-100;
+}
+
+/* Link buttons */
+linkbutton {
+    color: @nebula-400;
+}
+
+linkbutton:hover {
+    color: @nebula-300;
+}
+
+/* Selection */
+selection {
+    background: rgba(139, 92, 246, 0.4);
+    color: white;
+}
+
+/* Text view */
+textview text {
+    background: rgba(0, 0, 0, 0.2);
+    color: @nebula-50;
+}
+
+/* Separator */
+separator {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Window controls (SSD) */
+window.ssd headerbar.titlebar {
+    padding-top: 1px;
+    padding-bottom: 3px;
+    min-height: 0;
+}
+
+window.csd {
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}

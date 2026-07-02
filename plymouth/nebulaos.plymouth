@@ -1,8 +1,0 @@
-[Plymouth Theme]
-Name=NebulaOS
-Description=NebulaOS boot splash
-ModuleName=script
-
-[script]
-ImageDir=/usr/share/plymouth/themes/nebulaos
-ScriptFile=/usr/share/plymouth/themes/nebulaos/nebulaos.script

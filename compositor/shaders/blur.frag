@@ -1,41 +1,24 @@
-#ifdef GL_ES
+#version 300 es
 precision highp float;
-#endif
 
-varying vec2 v_texcoord;
-uniform sampler2D tex;
-uniform vec2 tex_size;
-uniform float blur_radius;
-uniform int num_passes;
+uniform sampler2D u_inputTexture;
+uniform vec2 u_texelSize;
+uniform vec2 u_direction;
 
-vec4 blur_h(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {
-    vec4 color = vec4(0.0);
-    vec2 off1 = vec2(1.3846153846) * direction;
-    vec2 off2 = vec2(3.2307692308) * direction;
-    color += texture2D(image, uv) * 0.2270270270;
-    color += texture2D(image, uv + (off1 / resolution)) * 0.3162162162;
-    color += texture2D(image, uv - (off1 / resolution)) * 0.3162162162;
-    color += texture2D(image, uv + (off2 / resolution)) * 0.0702702703;
-    color += texture2D(image, uv - (off2 / resolution)) * 0.0702702703;
-    return color;
-}
+in vec2 v_texCoord;
+out vec4 fragColor;
 
 void main() {
-    vec2 uv = v_texcoord;
-    vec2 pixel_size = 1.0 / tex_size;
+    /* Optimized 9-tap Gaussian with linear sampling (5 lookups) */
+    vec4 result = texture(u_inputTexture, v_texCoord) * 0.227027;
 
-    vec4 color = texture2D(tex, uv);
+    vec2 offset1 = u_direction * u_texelSize * 1.384615;
+    vec2 offset2 = u_direction * u_texelSize * 3.230769;
 
-    if (blur_radius > 0.0) {
-        for (int i = 0; i < 4; i++) {
-            float offset = float(i + 1) * blur_radius * pixel_size.x;
-            color += texture2D(tex, uv + vec2(offset, 0.0));
-            color += texture2D(tex, uv - vec2(offset, 0.0));
-            color += texture2D(tex, uv + vec2(0.0, offset));
-            color += texture2D(tex, uv - vec2(0.0, offset));
-        }
-        color /= (1.0 + 4.0 * 4.0);
-    }
+    result += texture(u_inputTexture, v_texCoord + offset1) * 0.1945946;
+    result += texture(u_inputTexture, v_texCoord - offset1) * 0.1945946;
+    result += texture(u_inputTexture, v_texCoord + offset2) * 0.054054;
+    result += texture(u_inputTexture, v_texCoord - offset2) * 0.054054;
 
-    gl_FragColor = color;
+    fragColor = result;
 }

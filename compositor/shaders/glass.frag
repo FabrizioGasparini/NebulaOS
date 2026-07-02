@@ -1,74 +1,56 @@
-#ifdef GL_ES
+#version 300 es
 precision highp float;
-#endif
 
-varying vec2 v_texcoord;
-uniform sampler2D tex;
-uniform vec2 tex_size;
-uniform float opacity;
-uniform float tint_r;
-uniform float tint_g;
-uniform float tint_b;
-uniform float blur_strength;
-uniform float brightness;
-uniform float saturation;
+in vec2 v_texCoord;
 
-mat4 brightnessMatrix(float b) {
-    float value = b - 1.0;
-    return mat4(
-        1.0, 0.0, 0.0, 0.0,
-        0.0, 1.0, 0.0, 0.0,
-        0.0, 0.0, 1.0, 0.0,
-        value, value, value, 1.0
-    );
+uniform sampler2D u_background;
+uniform sampler2D u_blurred;
+uniform vec2 u_resolution;
+uniform vec2 u_windowSize;
+uniform float u_cornerRadius;
+uniform float u_blurAmount;
+uniform float u_opacity;
+uniform vec4 u_tint;
+uniform float u_noiseStrength;
+
+out vec4 fragColor;
+
+float sdRoundedRect(vec2 p, vec2 b, float r) {
+    vec2 q = abs(p) - b + vec2(r);
+    return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
 }
 
-mat4 saturationMatrix(float s) {
-    vec3 luminance = vec3(0.2126, 0.7152, 0.0722);
-    vec3 v = luminance * (1.0 - s);
-    return mat4(
-        v.x + s, v.x,     v.x,     0.0,
-        v.y,     v.y + s, v.y,     0.0,
-        v.z,     v.z,     v.z + s, 0.0,
-        0.0,     0.0,     0.0,     1.0
-    );
-}
-
-vec4 gaussian_blur(sampler2D image, vec2 uv, vec2 resolution, float radius) {
-    vec4 color = vec4(0.0);
-    vec2 off1 = vec2(1.3846153846) * radius / resolution;
-    vec2 off2 = vec2(3.2307692308) * radius / resolution;
-
-    color += texture2D(image, uv) * 0.2270270270;
-    color += texture2D(image, uv + vec2(off1.x, 0.0)) * 0.3162162162;
-    color += texture2D(image, uv - vec2(off1.x, 0.0)) * 0.3162162162;
-    color += texture2D(image, uv + vec2(0.0, off1.y)) * 0.3162162162;
-    color += texture2D(image, uv - vec2(0.0, off1.y)) * 0.3162162162;
-    color += texture2D(image, uv + off2) * 0.0702702703;
-    color += texture2D(image, uv - off2) * 0.0702702703;
-    color += texture2D(image, uv + vec2(off2.x, -off2.y)) * 0.0702702703;
-    color += texture2D(image, uv + vec2(-off2.x, off2.y)) * 0.0702702703;
-
-    return color;
+float hash(vec2 p) {
+    vec3 p3 = fract(vec3(p.xyx) * 1689.1984);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
 }
 
 void main() {
-    vec2 uv = v_texcoord;
-    vec2 pixel_size = 1.0 / tex_size;
+    /* SDF mask for rounded corners */
+    vec2 fragPos = v_texCoord * u_windowSize;
+    vec2 halfSize = u_windowSize * 0.5;
+    float dist = sdRoundedRect(fragPos - halfSize, halfSize, u_cornerRadius);
+    float mask = 1.0 - smoothstep(-1.0, 1.0, dist);
 
-    vec4 blurred = gaussian_blur(tex, uv, tex_size, blur_strength);
+    if (mask < 0.001) discard;
 
-    vec4 tinted = vec4(
-        blurred.r * tint_r,
-        blurred.g * tint_g,
-        blurred.b * tint_b,
-        blurred.a
-    );
+    /* Sample sharp and blurred backgrounds */
+    vec3 sharp = texture(u_background, v_texCoord).rgb;
+    vec3 blurred = texture(u_blurred, v_texCoord).rgb;
 
-    tinted = brightnessMatrix(brightness) * tinted;
-    tinted = saturationMatrix(saturation) * tinted;
+    /* Blend based on blur amount */
+    vec3 color = mix(sharp, blurred, u_blurAmount);
 
-    tinted.a = opacity;
+    /* Apply violet/purple tint */
+    color *= u_tint.rgb;
 
-    gl_FragColor = tinted;
+    /* Add noise grain for frosted texture */
+    float grain = (hash(v_texCoord * u_resolution * 0.5) - 0.5) * u_noiseStrength;
+    color += grain;
+
+    /* Per-pixel alpha */
+    float alpha = mask * u_opacity;
+
+    fragColor = vec4(color, alpha);
 }

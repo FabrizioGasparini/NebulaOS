@@ -1,59 +1,93 @@
-#include "server.h"
+#define _POSIX_C_SOURCE 200809L
 #include <stdlib.h>
+#include <wlr/types/wlr_output.h>
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_scene.h>
+#include <wlr/util/log.h>
+
+#include "nebula/server.h"
 
 struct nebula_output {
-    struct wlr_output *wlr_output;
-    struct nebula_server *server;
     struct wl_list link;
+    struct nebula_server *server;
+    struct wlr_output *wlr_output;
+    struct wlr_scene_output *scene_output;
 
-    struct wl_listener frame;
-    struct wl_listener damage;
+    struct {
+        struct wl_listener frame;
+        struct wl_listener destroy;
+    } listeners;
 };
 
 static void output_handle_frame(struct wl_listener *listener, void *data) {
-    struct nebula_output *output = wl_container_of(listener, output, frame);
-    struct nebula_server *server = output->server;
+    struct nebula_output *output = wl_container_of(listener, output, listeners.frame);
+    (void)data;
 
-    wlr_output_schedule_frame(output->wlr_output);
+    /* Scene graph handles rendering automatically */
+    wlr_scene_output_commit(output->scene_output);
 }
 
-static void output_handle_damage(struct wl_listener *listener, void *data) {
-    struct nebula_output *output = wl_container_of(listener, output, damage);
+static void output_handle_destroy(struct wl_listener *listener, void *data) {
+    struct nebula_output *output = wl_container_of(listener, output, listeners.destroy);
+    (void)data;
 
-    wlr_output_schedule_frame(output->wlr_output);
+    wl_list_remove(&output->listeners.frame.link);
+    wl_list_remove(&output->listeners.destroy.link);
+    wl_list_remove(&output->link);
+    free(output);
 }
 
-static void server_new_output(struct wl_listener *listener, void *data) {
-    struct nebula_server *server = wl_container_of(listener, server, new_output);
-    struct wlr_output *wlr_output = data;
+void output_init(struct nebula_server *server) {
+    struct wlr_output *wlr_output = server->backend->outputs ?
+        wl_container_of(server->backend->outputs.next, wlr_output, link) : NULL;
+
+    if (!wlr_output) {
+        wlr_log(WLR_INFO, "No outputs available yet");
+        return;
+    }
+
+    /* Check if already tracked */
+    struct nebula_output *existing;
+    wl_list_for_each(existing, &server->outputs, link) {
+        if (existing->wlr_output == wlr_output) {
+            return;
+        }
+    }
+
+    struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
+    if (mode) {
+        wlr_output_set_mode(wlr_output, mode);
+    }
+    wlr_output_enable(wlr_output, true);
+
+    if (!wlr_output_commit(wlr_output)) {
+        wlr_log(WLR_ERROR, "Failed to commit output");
+        return;
+    }
 
     struct nebula_output *output = calloc(1, sizeof(*output));
-    output->wlr_output = wlr_output;
+    if (!output) {
+        wlr_log(WLR_ERROR, "Failed to allocate output");
+        return;
+    }
+
     output->server = server;
+    output->wlr_output = wlr_output;
+
+    struct wlr_scene_output *scene_output = wlr_scene_output_create(
+        server->scene, wlr_output);
+    output->scene_output = scene_output;
+
+    int width, height;
+    wlr_output_effective_resolution(wlr_output, &width, &height);
+    wlr_output_layout_add(server->output_layout, wlr_output, 0, 0);
+
+    output->listeners.frame.notify = output_handle_frame;
+    wl_signal_add(&wlr_output->events.frame, &output->listeners.frame);
+    output->listeners.destroy.notify = output_handle_destroy;
+    wl_signal_add(&wlr_output->events.destroy, &output->listeners.destroy);
 
     wl_list_insert(&server->outputs, &output->link);
 
-    wlr_output_layout_add_auto(server->output_layout, wlr_output);
-
-    output->frame.notify = output_handle_frame;
-    wl_signal_add(&wlr_output->events.frame, &output->frame);
-    output->damage.notify = output_handle_damage;
-    wl_signal_add(&wlr_output->events.damage, &output->damage);
-
-    if (!wlr_output_commit(wlr_output)) {
-        wl_list_remove(&output->link);
-        free(output);
-        return;
-    }
-}
-
-void server_init_output(struct nebula_server *server) {
-    wl_list_init(&server->outputs);
-
-    server->output_layout = wlr_output_layout_create();
-
-    server->new_output.notify = server_new_output;
-    wl_signal_add(&server->backend->events.new_output, &server->new_output);
+    wlr_log(WLR_INFO, "Output added: %s (%dx%d)", wlr_output->name, width, height);
 }

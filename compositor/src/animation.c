@@ -1,89 +1,162 @@
-#include "server.h"
 #include <math.h>
-#include <time.h>
+#include <string.h>
+#include "nebula/animation.h"
 
-static double lerp(double a, double b, double t) {
-    return a + (b - a) * t;
+void cubic_bezier_init(cubic_bezier_t *b, double p1x, double p1y,
+        double p2x, double p2y) {
+    b->p1x = p1x;
+    b->p1y = p1y;
+    b->p2x = p2x;
+    b->p2y = p2y;
+
+    b->cx = 3.0 * p1x;
+    b->bx = 3.0 * (p2x - p1x) - b->cx;
+    b->ax = 1.0 - b->cx - b->bx;
+
+    b->cy = 3.0 * p1y;
+    b->by = 3.0 * (p2y - p1y) - b->cy;
+    b->ay = 1.0 - b->cy - b->by;
 }
 
-static double ease_in_out_cubic(double t) {
-    return t < 0.5
-        ? 4 * t * t * t
-        : 1 - pow(-2 * t + 2, 3) / 2;
+static double sample_curve_x(const cubic_bezier_t *b, double t) {
+    return ((b->ax * t + b->bx) * t + b->cx) * t;
 }
 
-static double ease_out_cubic(double t) {
-    return 1 - pow(1 - t, 3);
+static double sample_curve_y(const cubic_bezier_t *b, double t) {
+    return ((b->ay * t + b->by) * t + b->cy) * t;
 }
 
-static double ease_in_cubic(double t) {
-    return t * t * t;
+static double sample_curve_derivative_x(const cubic_bezier_t *b, double t) {
+    return (3.0 * b->ax * t + 2.0 * b->bx) * t + b->cx;
 }
 
-static double ease_out_expo(double t) {
-    return t == 1.0 ? 1.0 : 1.0 - pow(2.0, -10.0 * t);
+double cubic_bezier_solve(const cubic_bezier_t *b, double x) {
+    double t = x;
+    double epsilon = 1e-6;
+
+    if (x <= 0.0) return 0.0;
+    if (x >= 1.0) return 1.0;
+
+    /* Newton-Raphson */
+    for (int i = 0; i < 8; i++) {
+        double current_x = sample_curve_x(b, t) - x;
+        if (fabs(current_x) < epsilon) {
+            return sample_curve_y(b, t);
+        }
+        double derivative = sample_curve_derivative_x(b, t);
+        if (fabs(derivative) < 1e-6) {
+            break;
+        }
+        t -= current_x / derivative;
+    }
+
+    /* Bisection fallback */
+    double tl = 0.0, tr = 1.0;
+    t = x;
+    for (int i = 0; i < 20; i++) {
+        double current_x = sample_curve_x(b, t);
+        if (fabs(current_x - x) < epsilon) {
+            return sample_curve_y(b, t);
+        }
+        if (x > current_x) {
+            tl = t;
+        } else {
+            tr = t;
+        }
+        t = (tr - tl) / 2.0 + tl;
+    }
+
+    return sample_curve_y(b, t);
 }
 
-static double ease_in_out_back(double t) {
-    const double c1 = 1.70158;
-    const double c2 = c1 * 1.525;
-    if (t < 0.5) {
-        return (pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2;
-    } else {
-        return (pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
+void animation_init(animation_manager_t *mgr) {
+    memset(mgr, 0, sizeof(*mgr));
+    mgr->num_channels = 0;
+    mgr->any_running = false;
+}
+
+int animation_add_cubic(animation_manager_t *mgr, double from, double to,
+        double duration_ms, double p1x, double p1y, double p2x, double p2y) {
+    if (mgr->num_channels >= MAX_ANIMATIONS) {
+        return -1;
+    }
+
+    animation_channel_t *ch = &mgr->channels[mgr->num_channels++];
+    memset(ch, 0, sizeof(*ch));
+
+    ch->type = ANIM_CUBIC_BEZIER;
+    ch->current = from;
+    ch->velocity = 0;
+    ch->target = to;
+    ch->from_value = from;
+    ch->duration_ms = duration_ms;
+    ch->elapsed_ms = 0;
+
+    cubic_bezier_init(&ch->bezier, p1x, p1y, p2x, p2y);
+
+    mgr->any_running = true;
+    return mgr->num_channels - 1;
+}
+
+int animation_add_spring(animation_manager_t *mgr, double from, double to,
+        double mass, double stiffness, double damping) {
+    if (mgr->num_channels >= MAX_ANIMATIONS) {
+        return -1;
+    }
+
+    animation_channel_t *ch = &mgr->channels[mgr->num_channels++];
+    memset(ch, 0, sizeof(*ch));
+
+    ch->type = ANIM_SPRING;
+    ch->current = from;
+    ch->velocity = 0;
+    ch->target = to;
+    ch->from_value = from;
+
+    ch->spring_cfg.mass = mass;
+    ch->spring_cfg.stiffness = stiffness;
+    ch->spring_cfg.damping = damping;
+    ch->spring_cfg.threshold = 0.001;
+
+    mgr->any_running = true;
+    return mgr->num_channels - 1;
+}
+
+void animation_tick(animation_manager_t *mgr, double dt_ms) {
+    mgr->any_running = false;
+
+    for (int i = 0; i < mgr->num_channels; i++) {
+        animation_channel_t *ch = &mgr->channels[i];
+
+        if (ch->type == ANIM_CUBIC_BEZIER) {
+            ch->elapsed_ms += dt_ms;
+            double raw_t = ch->elapsed_ms / ch->duration_ms;
+            if (raw_t > 1.0) raw_t = 1.0;
+
+            double p = cubic_bezier_solve(&ch->bezier, raw_t);
+            ch->current = ch->from_value + (ch->target - ch->from_value) * p;
+
+            if (raw_t < 1.0) {
+                mgr->any_running = true;
+            }
+        } else if (ch->type == ANIM_SPRING) {
+            double dt_s = dt_ms / 1000.0;
+            double displacement = ch->current - ch->target;
+            double spring_force = -ch->spring_cfg.stiffness * displacement;
+            double damp_force = -ch->spring_cfg.damping * ch->velocity;
+            double accel = (spring_force + damp_force) / ch->spring_cfg.mass;
+
+            ch->velocity += accel * dt_s;
+            ch->current += ch->velocity * dt_s;
+
+            if (fabs(displacement) > ch->spring_cfg.threshold ||
+                fabs(ch->velocity) > ch->spring_cfg.threshold) {
+                mgr->any_running = true;
+            }
+        }
     }
 }
 
-static double timespec_diff_ms(struct timespec *a, struct timespec *b) {
-    return (a->tv_sec - b->tv_sec) * 1000.0 +
-           (a->tv_nsec - b->tv_nsec) / 1000000.0;
-}
-
-void animation_init(struct nebula_animation *anim) {
-    anim->active = false;
-    anim->on_complete = NULL;
-    anim->data = NULL;
-}
-
-void animation_begin(struct nebula_animation *anim,
-    double start_x, double start_y, double start_w, double start_h,
-    double end_x, double end_y, double end_w, double end_h,
-    uint32_t duration_ms) {
-    anim->start_x = start_x;
-    anim->start_y = start_y;
-    anim->start_w = start_w;
-    anim->start_h = start_h;
-    anim->start_alpha = 1.0;
-    anim->end_x = end_x;
-    anim->end_y = end_y;
-    anim->end_w = end_w;
-    anim->end_h = end_h;
-    anim->end_alpha = 1.0;
-    anim->duration_ms = duration_ms;
-    anim->active = true;
-    clock_gettime(CLOCK_MONOTONIC, &anim->start_time);
-}
-
-bool animation_tick(struct nebula_animation *anim, struct timespec *now,
-    double *x, double *y, double *w, double *h) {
-    if (!anim->active) {
-        return false;
-    }
-
-    double elapsed = timespec_diff_ms(now, &anim->start_time);
-    double t = elapsed / anim->duration_ms;
-
-    if (t >= 1.0) {
-        t = 1.0;
-        anim->active = false;
-    }
-
-    double eased_t = ease_in_out_cubic(t);
-
-    *x = lerp(anim->start_x, anim->end_x, eased_t);
-    *y = lerp(anim->start_y, anim->end_y, eased_t);
-    *w = lerp(anim->start_w, anim->end_w, eased_t);
-    *h = lerp(anim->start_h, anim->end_h, eased_t);
-
-    return anim->active;
+bool animation_any_running(animation_manager_t *mgr) {
+    return mgr->any_running;
 }

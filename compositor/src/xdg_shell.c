@@ -1,297 +1,130 @@
-#include "server.h"
+#define _POSIX_C_SOURCE 200809L
 #include <stdlib.h>
-#include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/types/wlr_scene.h>
-#include <wlr/types/wlr_foreign_toplevel_management_v1.h>
+#include <wlr/types/wlr_xdg_shell.h>
+#include <wlr/util/log.h>
 
-static void view_get_box(struct nebula_view *view, struct wlr_box *box) {
-    struct wlr_surface_state *state = &view->xdg_surface->current;
-    box->x = view->x;
-    box->y = view->y;
-    box->width = state->geometry.width;
-    box->height = state->geometry.height;
-}
+#include "nebula/server.h"
+#include "nebula/view.h"
 
-static void view_update_position(struct nebula_view *view, int x, int y) {
-    view->x = x;
-    view->y = y;
-    wlr_scene_node_set_position(&view->scene_tree->node, x, y);
-}
-
-static void view_handle_map(struct wl_listener *listener, void *data) {
-    struct nebula_view *view = wl_container_of(listener, view, map);
-    struct nebula_server *server = view->server;
+static void xdg_surface_map(struct wl_listener *listener, void *data) {
+    struct nebula_view *view = wl_container_of(listener, view, listeners.map);
+    (void)data;
 
     view->mapped = true;
-
-    struct wlr_box box;
-    view_get_box(view, &box);
-    view_center(view);
-
-    struct nebula_workspace *ws = server->current_workspace;
-    workspace_add_view(ws, view);
-    wlr_scene_node_set_enabled(&view->scene_tree->node, ws == view->workspace);
-
-    if (!server->focused_view) {
-        wlr_seat_keyboard_notify_enter(server->seat,
-            view->xdg_surface->surface,
-            view->xdg_surface->surface->keyboard_keycodes,
-            view->xdg_surface->surface->num_keyboard_keycodes);
-        server->focused_view = view;
-    }
-
-    if (server->toplevel_manager) {
-        struct wlr_foreign_toplevel_handle_v1 *tl =
-            wlr_foreign_toplevel_handle_v1_create(server->toplevel_manager);
-        wlr_foreign_toplevel_handle_v1_set_title(tl,
-            view->xdg_surface->toplevel->title ?
-            view->xdg_surface->toplevel->title : "NebulaOS");
-    }
+    wlr_scene_node_set_enabled(&view->scene_tree->node, true);
+    view_focus(view);
 }
 
-static void view_handle_unmap(struct wl_listener *listener, void *data) {
-    struct nebula_view *view = wl_container_of(listener, view, unmap);
+static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
+    struct nebula_view *view = wl_container_of(listener, view, listeners.unmap);
+    (void)data;
+
+    view_unmap(view);
+}
+
+static void xdg_surface_destroy(struct wl_listener *listener, void *data) {
+    struct nebula_view *view = wl_container_of(listener, view, listeners.destroy);
+    (void)data;
+
+    view_destroy(view);
+}
+
+static void xdg_toplevel_request_move(struct wl_listener *listener, void *data) {
+    struct nebula_view *view = wl_container_of(listener, view, listeners.request_move);
+    (void)data;
+
     struct nebula_server *server = view->server;
-
-    view->mapped = false;
-
-    if (view->workspace) {
-        workspace_remove_view(view->workspace, view);
+    struct wlr_surface *focused = server->seat->pointer_state.focused_surface;
+    if (view->shell.xdg_surface->surface != focused) {
+        return;
     }
 
-    if (server->focused_view == view) {
-        server->focused_view = NULL;
+    view_begin_move(view);
+}
 
-        struct nebula_view *next;
-        wl_list_for_each(next, &server->current_workspace->views, link) {
-            if (next->mapped) {
-                wlr_seat_keyboard_notify_enter(server->seat,
-                    next->xdg_surface->surface,
-                    next->xdg_surface->surface->keyboard_keycodes,
-                    next->xdg_surface->surface->num_keyboard_keycodes);
-                server->focused_view = next;
-                break;
-            }
-        }
+static void xdg_toplevel_request_resize(struct wl_listener *listener, void *data) {
+    struct nebula_view *view = wl_container_of(listener, view, listeners.request_resize);
+    struct wlr_xdg_toplevel_resize_event *event = data;
+
+    struct nebula_server *server = view->server;
+    struct wlr_surface *focused = server->seat->pointer_state.focused_surface;
+    if (view->shell.xdg_surface->surface != focused) {
+        return;
     }
+
+    view_begin_resize(view, event->edges);
 }
 
-static void view_handle_destroy(struct wl_listener *listener, void *data) {
-    struct nebula_view *view = wl_container_of(listener, view, destroy);
+static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *data) {
+    struct nebula_view *view = wl_container_of(listener, view, listeners.request_maximize);
+    (void)data;
 
-    wl_list_remove(&view->map.link);
-    wl_list_remove(&view->unmap.link);
-    wl_list_remove(&view->destroy.link);
-    wl_list_remove(&view->request_maximize.link);
-    wl_list_remove(&view->request_fullscreen.link);
-    wl_list_remove(&view->request_move.link);
-    wl_list_remove(&view->request_resize.link);
-    wl_list_remove(&view->new_popup.link);
-    wl_list_remove(&view->link);
-
-    free(view);
+    wlr_xdg_toplevel_set_maximized(view->shell.xdg_surface, true);
 }
 
-static void view_handle_request_maximize(struct wl_listener *listener, void *data) {
-    struct nebula_view *view = wl_container_of(listener, view, request_maximize);
-    wlr_xdg_surface_schedule_configure(view->xdg_surface);
-    view_set_maximized(view, !view->maximized);
+static void xdg_toplevel_request_fullscreen(struct wl_listener *listener, void *data) {
+    struct nebula_view *view = wl_container_of(listener, view, listeners.request_fullscreen);
+    struct wlr_xdg_surface *xdg_surface = data;
+
+    wlr_xdg_toplevel_set_fullscreen(xdg_surface, true);
 }
 
-static void view_handle_request_fullscreen(struct wl_listener *listener, void *data) {
-    struct nebula_view *view = wl_container_of(listener, view, request_fullscreen);
-    wlr_xdg_surface_schedule_configure(view->xdg_surface);
-    view_set_fullscreen(view, !view->fullscreen);
-}
+static void xdg_surface_new_popup(struct wl_listener *listener, void *data) {
+    struct nebula_view *view = wl_container_of(listener, view, listeners.new_popup);
+    struct wlr_xdg_popup *popup = data;
 
-static void view_handle_request_move(struct wl_listener *listener, void *data) {
-    struct nebula_view *view = wl_container_of(listener, view, request_move);
-    struct nebula_server *server = view->server;
-    view_begin_move(view, server->cursor, server->seat->keyboard->modifiers);
-}
-
-static void view_handle_request_resize(struct wl_listener *listener, void *data) {
-    struct nebula_view *view = wl_container_of(listener, view, request_resize);
-    struct wlr_xdg_resize_event *event = data;
-    struct nebula_server *server = view->server;
-    view_begin_resize(view, server->cursor, server->seat->keyboard->modifiers,
-        event->edges);
-}
-
-static void view_handle_new_popup(struct wl_listener *listener, void *data) {
-    struct nebula_view *view = wl_container_of(listener, view, new_popup);
-    struct wlr_xdg_surface *popup = data;
-
-    wlr_scene_xdg_surface_create(view->scene_tree, popup);
+    wlr_scene_xdg_surface_create(view->scene_tree, popup->base);
 }
 
 static void server_new_xdg_surface(struct wl_listener *listener, void *data) {
-    struct nebula_server *server = wl_container_of(listener, server, new_xdg_surface);
+    struct nebula_server *server = wl_container_of(listener, server, listeners.new_xdg_surface);
     struct wlr_xdg_surface *xdg_surface = data;
 
-    if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-        struct wlr_scene_tree *parent_tree = wlr_scene_get_tree(
-            xdg_surface->parent->surface);
-        wlr_scene_xdg_surface_create(parent_tree, xdg_surface);
+    if (xdg_surface->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
         return;
     }
 
-    struct nebula_view *view = calloc(1, sizeof(*view));
-    view->xdg_surface = xdg_surface;
-    view->server = server;
-    wl_list_init(&view->link);
-
-    view->scene_tree = wlr_scene_xdg_surface_create(
-        server->floating_tree, xdg_surface);
-
-    view->map.notify = view_handle_map;
-    wl_signal_add(&xdg_surface->events.map, &view->map);
-    view->unmap.notify = view_handle_unmap;
-    wl_signal_add(&xdg_surface->events.unmap, &view->unmap);
-    view->destroy.notify = view_handle_destroy;
-    wl_signal_add(&xdg_surface->events.destroy, &view->destroy);
-
-    view->request_maximize.notify = view_handle_request_maximize;
-    wl_signal_add(&xdg_surface->toplevel->events.request_maximize,
-        &view->request_maximize);
-    view->request_fullscreen.notify = view_handle_request_fullscreen;
-    wl_signal_add(&xdg_surface->toplevel->events.request_fullscreen,
-        &view->request_fullscreen);
-    view->request_move.notify = view_handle_request_move;
-    wl_signal_add(&xdg_surface->toplevel->events.request_move,
-        &view->request_move);
-    view->request_resize.notify = view_handle_request_resize;
-    wl_signal_add(&xdg_surface->toplevel->events.request_resize,
-        &view->request_resize);
-
-    view->new_popup.notify = view_handle_new_popup;
-    wl_signal_add(&xdg_surface->events.new_popup, &view->new_popup);
-}
-
-void view_begin_move(struct nebula_view *view, struct wlr_cursor *cursor,
-    uint32_t modifiers) {
-    struct nebula_server *server = view->server;
-    server->in_mode = true;
-    server->mode = NEBULA_MODE_MOVE;
-    server->grab_x = cursor->x - view->x;
-    server->grab_y = cursor->y - view->y;
-    server->grab_box_x = view->x;
-    server->grab_box_y = view->y;
-
-    struct wlr_box box;
-    view_get_box(view, &box);
-    server->grab_box_width = box.width;
-    server->grab_box_height = box.height;
-
-    wlr_seat_keyboard_notify_clear_focus(server->seat);
-}
-
-void view_begin_resize(struct nebula_view *view, struct wlr_cursor *cursor,
-    uint32_t modifiers, uint32_t edge) {
-    struct nebula_server *server = view->server;
-    server->in_mode = true;
-    server->mode = NEBULA_MODE_RESIZE;
-    server->grab_x = cursor->x;
-    server->grab_y = cursor->y;
-
-    struct wlr_box box;
-    view_get_box(view, &box);
-    server->grab_box_x = box.x;
-    server->grab_box_y = box.y;
-    server->grab_box_width = box.width;
-    server->grab_box_height = box.height;
-
-    wlr_seat_keyboard_notify_clear_focus(server->seat);
-}
-
-void view_center(struct nebula_view *view) {
-    struct wlr_output *output = wlr_output_layout_get_center_output(
-        view->server->output_layout);
-    if (!output) {
+    struct nebula_view *view = view_create(server, VIEW_XDG_SHELL);
+    if (!view) {
+        wlr_log(WLR_ERROR, "Failed to create view");
         return;
     }
 
-    struct wlr_box output_box;
-    wlr_output_layout_get_box(view->server->output_layout, output, &output_box);
+    view->shell.xdg_surface = xdg_surface;
+    xdg_surface->data = view;
 
-    struct wlr_box box;
-    view_get_box(view, &box);
+    wlr_scene_xdg_surface_create(view->scene_tree, xdg_surface);
 
-    view->x = output_box.x + (output_box.width - box.width) / 2;
-    view->y = output_box.y + (output_box.height - box.height) / 2;
-    wlr_scene_node_set_position(&view->scene_tree->node, view->x, view->y);
+    view->listeners.map.notify = xdg_surface_map;
+    wl_signal_add(&xdg_surface->events.map, &view->listeners.map);
+    view->listeners.unmap.notify = xdg_surface_unmap;
+    wl_signal_add(&xdg_surface->events.unmap, &view->listeners.unmap);
+    view->listeners.destroy.notify = xdg_surface_destroy;
+    wl_signal_add(&xdg_surface->events.destroy, &view->listeners.destroy);
+    view->listeners.request_move.notify = xdg_toplevel_request_move;
+    wl_signal_add(&xdg_surface->toplevel->events.request_move, &view->listeners.request_move);
+    view->listeners.request_resize.notify = xdg_toplevel_request_resize;
+    wl_signal_add(&xdg_surface->toplevel->events.request_resize, &view->listeners.request_resize);
+    view->listeners.request_maximize.notify = xdg_toplevel_request_maximize;
+    wl_signal_add(&xdg_surface->toplevel->events.request_maximize, &view->listeners.request_maximize);
+    view->listeners.request_fullscreen.notify = xdg_toplevel_request_fullscreen;
+    wl_signal_add(&xdg_surface->toplevel->events.request_fullscreen, &view->listeners.request_fullscreen);
+    view->listeners.new_popup.notify = xdg_surface_new_popup;
+    wl_signal_add(&xdg_surface->events.new_popup, &view->listeners.new_popup);
+
+    /* Start with animation */
+    view->anim_scale = 0.95;
+    view->anim_alpha = 0.0;
+
+    wlr_scene_node_set_enabled(&view->scene_tree->node, false);
+
+    wlr_log(WLR_INFO, "New XDG surface: %s",
+        xdg_surface->toplevel->title ? xdg_surface->toplevel->title : "(untitled)");
 }
 
-void view_set_maximized(struct nebula_view *view, bool maximized) {
-    struct nebula_server *server = view->server;
-    struct wlr_output *output = wlr_output_layout_get_center_output(
-        server->output_layout);
-    if (!output) {
-        return;
-    }
-
-    view->maximized = maximized;
-
-    if (maximized) {
-        struct wlr_box output_box;
-        wlr_output_layout_get_box(server->output_layout, output, &output_box);
-
-        struct wlr_box box;
-        view_get_box(view, &box);
-        view->prev_width = box.width;
-        view->prev_height = box.height;
-
-        wlr_xdg_toplevel_set_size(view->xdg_surface,
-            output_box.width, output_box.height);
-    } else {
-        wlr_xdg_toplevel_set_size(view->xdg_surface,
-            view->prev_width, view->prev_height);
-    }
-
-    wlr_xdg_surface_schedule_configure(view->xdg_surface);
-}
-
-void view_set_fullscreen(struct nebula_view *view, bool fullscreen) {
-    view->fullscreen = fullscreen;
-    wlr_xdg_toplevel_set_fullscreen(view->xdg_surface, fullscreen);
-    wlr_xdg_surface_schedule_configure(view->xdg_surface);
-}
-
-void view_close(struct nebula_view *view) {
-    wlr_xdg_toplevel_send_close(view->xdg_surface);
-}
-
-struct nebula_view *view_at(struct nebula_server *server,
-    double x, double y, struct wlr_surface **surface,
-    double *sx, double *sy) {
-    struct wlr_scene_node *node = wlr_scene_node_at(
-        &server->scene->tree.node, x, y, sx, sy);
-    if (!node) {
-        return NULL;
-    }
-
-    struct wlr_scene_surface *scene_surface =
-        wlr_scene_surface_try_from_node(node);
-    if (!scene_surface) {
-        return NULL;
-    }
-
-    *surface = scene_surface->surface;
-
-    struct wlr_scene_tree *tree = node->parent;
-    while (tree && tree != server->floating_tree) {
-        struct nebula_view *view;
-        wl_list_for_each(view, &server->views, link) {
-            if (view->scene_tree == tree) {
-                return view;
-            }
-        }
-        tree = tree->parent;
-    }
-
-    return NULL;
-}
-
-void server_new_xdg_surface_handler(struct wl_listener *listener, void *data) {
-    server_new_xdg_surface(listener, data);
+void xdg_shell_init(struct nebula_server *server) {
+    server->listeners.new_xdg_surface.notify = server_new_xdg_surface;
+    wl_signal_add(&server->xdg_shell->events.new_surface,
+        &server->listeners.new_xdg_surface);
 }

@@ -1,0 +1,63 @@
+# NebulaOS Package List
+
+# Base system
+base
+linux
+linux-firmware
+linux-headers
+mkinitcpio
+mkinitcpio-archiso
+arch-install-scripts
+
+# Bootloaders
+grub
+efibootmgr
+systemd-boot
+intel-ucode
+amd-ucode
+
+# Display / Wayland
+wayland
+mesa
+xorg-xwayland
+egl-wayland
+libinput
+
+# Compositor dependencies
+wlroots
+wayland-protocols
+xkbcommon
+libdrm
+libepoxy
+
+# Display manager
+greetd
+greetd-tuigreet
+
+# GTK4 apps
+gtk4
+libadwaita
+python-gobject
+python-cairo
+
+# Terminal
+vte4
+
+# Networking
+networkmanager
+iwd
+openssh
+wget
+curl
+
+# System tools
+base-devel
+git
+vim
+nano
+htop
+sudo
+bash-completion
+man-db
+man-pages
+xdg-utils

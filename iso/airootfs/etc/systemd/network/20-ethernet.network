@@ -1,0 +1,10 @@
+[Match]
+Name=en* eth*
+
+[Network]
+DHCP=yes
+MulticastDNS=yes
+
+[DHCP]
+RouteMetric=100
+RequiredForOnline=routable
